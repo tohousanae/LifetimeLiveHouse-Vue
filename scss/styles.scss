@@ -1,0 +1,45 @@
+$primary-color: #e0540e;
+$secondary-color: #1cb6e9;
+$black-color:#1c1c1c;
+$white-color:#f5f3f3;
+$base-font-size:20px;
+body{
+  font-size: $base-font-size*1.5;
+}
+nav{
+  width:50%;
+  ul{
+    font-size: 2rem;
+    li{
+      border-bottom: 1px solid $primary-color;
+      a{
+        color:$primary-color;
+        &:hover{
+          color:$secondary-color;
+        }
+      }
+    }
+  }
+}
+.bg-primary{
+  background: $primary-color;
+}
+@mixin border-radius($radius:50px){
+  border-radius: $radius;
+} 
+
+.button{
+  @include border-radius;
+  @extend %box;
+}
+.card{
+  @include border-radius(10px);
+  @extend %box;
+}
+.img-rounded{
+  @include border-radius;
+}
+%box{
+  padding:10px;
+  border:1px solid $black-color;
+}
