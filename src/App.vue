@@ -1,5 +1,5 @@
 <script setup>
-import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'
+import '../node_modules/bootstrap/dist/js/bootstrap.min.js'
 import Navbar from './components/bugershop/Navbar.vue';
 import Home from './components/bugershop/Home.vue';
 import end from './components/bugershop/end.vue'
@@ -18,6 +18,7 @@ import end from './components/bugershop/end.vue'
   <!--footer區域-->
   <end></end>
   <!--footer區域-->
+  <RouterView></RouterView>
 </template>
 
 <style lang="scss">

@@ -1,11 +1,15 @@
 <script setup>
+import { RouterLink } from 'vue-router';
+
 </script>
 
 <template>
     <!-- 主導覽 start -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="index.html">LOGO</a>
+            <a class="navbar-brand">
+                <RouterLink to="/">LOGO</RouterLink>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
