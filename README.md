@@ -45,3 +45,7 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+### 注意事項
+
+本專案與海綿寶寶原作的蟹堡王餐廳一點關係都沒有(笑
