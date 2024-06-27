@@ -22,6 +22,7 @@ import end from './components/bugershop/end.vue'
 </template>
 
 <style lang="scss">
+// 引入Boostrap自訂義css
 @import '../scss/custom.scss';
 </style>
 <style>
