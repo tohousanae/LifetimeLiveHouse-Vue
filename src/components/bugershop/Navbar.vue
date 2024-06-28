@@ -7,9 +7,7 @@ import { RouterLink } from 'vue-router';
     <!-- 主導覽 start -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand">
-                <RouterLink to="/">LOGO</RouterLink>
-            </a>
+            <RouterLink class="navbar-brand" to="/">LOGO</RouterLink>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -19,30 +17,20 @@ import { RouterLink } from 'vue-router';
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">關於我們</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            產品列表
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="product-list.html">產品分類1</a></li>
-                            <li><a class="dropdown-item" href="product-list.html">產品分類2</a></li>
-                            <li><a class="dropdown-item" href="product-list.html">產品分類3</a></li>
-                            <li><a class="dropdown-item" href="product-list.html">產品分類4</a></li>
-                        </ul>
+                        <RouterLink class="nav-link" to="/about">關於我們</RouterLink>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="store.html">門市店舖</a>
+                        <RouterLink class="nav-link" to="/">商品列表</RouterLink>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="faq.html">常見問題</a>
+                        <RouterLink class="nav-link" to="/">門市店舖</RouterLink>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.html">聯絡我們</a>
+                        <RouterLink class="nav-link" to="/">常見問題</RouterLink>
                     </li>
-
+                    <li class="nav-item">
+                        <RouterLink class="nav-link" to="/">聯絡我們</RouterLink>
+                    </li>
 
                 </ul>
                 <form class="d-flex">

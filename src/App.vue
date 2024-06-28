@@ -18,20 +18,16 @@ import end from './components/bugershop/end.vue'
   <!--footer區域-->
   <end></end>
   <!--footer區域-->
-  <RouterView></RouterView>
 </template>
-
-<style lang="scss">
-// 引入Boostrap自訂義css
-@import '../scss/custom.scss';
-</style>
-<style>
-@import '../node_modules/bootstrap-icons/font/bootstrap-icons.min.css'
-</style>
 <style scoped>
 @media (min-width:767px) {
   .row-md-cols-5 .col {
     width: 20%;
   }
 }
+</style>
+<style lang="scss">
+// 引入Boostrap自訂義css與boostrap icons
+@import '../scss/custom.scss';
+@import '../node_modules/bootstrap-icons/font/bootstrap-icons.min.css'
 </style>

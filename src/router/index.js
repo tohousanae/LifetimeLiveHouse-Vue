@@ -20,4 +20,7 @@ const router = createRouter({
   ]
 })
 
+/*導航守衛*/
+// 使用者登入後才可進入的頁面
+
 export default router
