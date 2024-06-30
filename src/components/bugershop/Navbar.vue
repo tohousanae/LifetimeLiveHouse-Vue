@@ -7,7 +7,7 @@ import { RouterLink } from 'vue-router';
     <!-- 主導覽 start -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <RouterLink class="navbar-brand" to="/">LOGO</RouterLink>
+            <RouterLink class="navbar-brand" to="/">凌晨3點漢堡店</RouterLink>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -68,9 +68,9 @@ import { RouterLink } from 'vue-router';
                             <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
                             <label for="floatingPassword">密碼</label>
                         </div>
-                        <a href="javascript:;" class="float-end">忘記密碼</a>
+                        <a href="/forgetpassword" class="float-end">忘記密碼</a>
                         <button type="submit" class="btn btn-primary form-control">登入</button>
-                        <a href="javascript:;">還未加入我們嗎？立即行動！</a>
+                        <a href="/register">還未加入我們嗎？立即註冊！</a>
                     </form>
                 </div>
             </div>

@@ -1,7 +1,6 @@
 <script setup>
 import '../node_modules/bootstrap/dist/js/bootstrap.min.js'
 import Navbar from './components/bugershop/Navbar.vue';
-import Home from './components/bugershop/Home.vue';
 import end from './components/bugershop/end.vue'
 </script>
 
@@ -11,9 +10,10 @@ import end from './components/bugershop/end.vue'
     <Navbar></Navbar>
     <!--主導覽列-->
   </header>
-  <!--首頁區域-->
-  <home></home>
-  <!--首頁區域-->
+
+  <!--router頁面顯示區域-->
+  <RouterView></RouterView>
+  <!--router頁面顯示區域-->
 
   <!--footer區域-->
   <end></end>

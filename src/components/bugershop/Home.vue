@@ -166,7 +166,19 @@
 </template>
 
 <script setup>
+// 測試get呼叫
+import axios from 'axios';
 
+// Make a request for a user with a given ID
+axios.get('https://localhost:7143/WeatherForecast')
+    .then(function (response) {
+        // handle success
+        console.log(response);
+    })
+    .catch(function (error) {
+        // handle error
+        console.log(error);
+    })
 </script>
 
 <style scoped></style>
