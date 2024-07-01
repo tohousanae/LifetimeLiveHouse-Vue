@@ -173,7 +173,7 @@ import axios from 'axios';
 axios.get('https://localhost:7143/WeatherForecast')
     .then(function (response) {
         // handle success
-        console.log(response);
+        console.log(response.data);
     })
     .catch(function (error) {
         // handle error
