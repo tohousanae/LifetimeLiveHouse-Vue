@@ -1,6 +1,6 @@
 <script setup>
 import '../node_modules/bootstrap/dist/js/bootstrap.min.js'
-import Navbar from './components/bugershop/Navbar.vue';
+import Navbar from './components/bugershop/Navbar.vue'
 import end from './components/bugershop/end.vue'
 </script>
 
@@ -20,7 +20,7 @@ import end from './components/bugershop/end.vue'
   <!--footer區域-->
 </template>
 <style scoped>
-@media (min-width:767px) {
+@media (min-width: 767px) {
   .row-md-cols-5 .col {
     width: 20%;
   }
@@ -29,5 +29,5 @@ import end from './components/bugershop/end.vue'
 <style lang="scss">
 // 引入Boostrap自訂義css與boostrap icons
 @import '../scss/custom.scss';
-@import '../node_modules/bootstrap-icons/font/bootstrap-icons.min.css'
+@import '../node_modules/bootstrap-icons/font/bootstrap-icons.min.css';
 </style>
