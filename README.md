@@ -2,7 +2,7 @@
 
 ## 後端部分
 
-[[[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).](https://github.com/tohousanae/am3buger-WebApi)](https://github.com/tohousanae/am3buger-WebApi)
+https://github.com/tohousanae/am3buger-WebApi
 
 ## Recommended IDE Setup
 
