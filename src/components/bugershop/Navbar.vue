@@ -28,7 +28,7 @@ import LoginModal from '@/components/bugershop/user/LoginModal.vue'
             <RouterLink class="nav-link" to="/">商品列表</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/">門市店舖</RouterLink>
+            <RouterLink class="nav-link" to="/">分店一覽</RouterLink>
           </li>
           <li class="nav-item">
             <RouterLink class="nav-link" to="/">常見問題</RouterLink>

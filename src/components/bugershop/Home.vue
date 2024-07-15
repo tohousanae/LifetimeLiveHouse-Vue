@@ -1,4 +1,7 @@
 <template>
+  <!--主導覽列-->
+  <Navbar></Navbar>
+  <!--主導覽列-->
   <!-- carousel start -->
   <div id="carouselExampleIndicators" class="carousel slide mb-5" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -185,11 +188,17 @@
     </div>
   </div>
   <!-- content end -->
+
+  <!--footer區域-->
+  <end></end>
+  <!--footer區域-->
 </template>
 
 <script setup>
 import axios from 'axios'
 import { onMounted } from 'vue'
+import Navbar from '@/components/bugershop/Navbar.vue'
+import end from '@/components/bugershop/end.vue'
 
 async function getWeatherForecast() {
   await axios
