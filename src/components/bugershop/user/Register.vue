@@ -1,68 +1,213 @@
 <template>
-  <form class="row g-3 needs-validation" novalidate>
-    <div class="col-md-4">
-      <label for="validationCustom01" class="form-label">First name</label>
-      <input type="text" class="form-control" id="validationCustom01" value="Mark" required />
-      <div class="valid-feedback">Looks good!</div>
-    </div>
-    <div class="col-md-4">
-      <label for="validationCustom02" class="form-label">Last name</label>
-      <input type="text" class="form-control" id="validationCustom02" value="Otto" required />
-      <div class="valid-feedback">Looks good!</div>
-    </div>
-    <div class="col-md-4">
-      <label for="validationCustomUsername" class="form-label">Username</label>
-      <div class="input-group has-validation">
-        <span class="input-group-text" id="inputGroupPrepend">@</span>
-        <input
-          type="text"
-          class="form-control"
-          id="validationCustomUsername"
-          aria-describedby="inputGroupPrepend"
-          required
-        />
-        <div class="invalid-feedback">Please choose a username.</div>
+  <!--註冊表單模板：https://codepen.io/1bbnuuu/pen/dyagBQz-->
+  <div class="form-center">
+    <div class="container">
+      <div class="card">
+        <form method="post" action="">
+          <h2 class="register">會員註冊</h2>
+          <p id="passwordError"></p>
+          <input type="text" placeholder="Username" autocomplete="username" />
+          <input
+            type="password"
+            minlength="8"
+            id="password"
+            placeholder="Password"
+            autocomplete="password"
+            oninput="checkPasswords()"
+          />
+          <input
+            type="password"
+            minlength="8"
+            id="confirmPassword"
+            placeholder="confirm password"
+            oninput="checkPasswords()"
+          />
+
+          <input
+            type="text"
+            id="fullName"
+            placeholder="
+full name"
+          />
+          <input type="number" id="phoneNumber" placeholder="phone number" />
+          <button
+            class="tombol-register"
+            type="submit"
+            id="registerButton"
+            disabled
+            onclick="redirectToLogin()"
+          >
+            Register
+          </button>
+        </form>
+        <div class="switch">
+          <h5>Already have account?</h5>
+          <a href="#">Login</a>
+        </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <label for="validationCustom03" class="form-label">City</label>
-      <input type="text" class="form-control" id="validationCustom03" required />
-      <div class="invalid-feedback">Please provide a valid city.</div>
-    </div>
-    <div class="col-md-3">
-      <label for="validationCustom04" class="form-label">State</label>
-      <select class="form-select" id="validationCustom04" required>
-        <option selected disabled value="">Choose...</option>
-        <option>...</option>
-      </select>
-      <div class="invalid-feedback">Please select a valid state.</div>
-    </div>
-    <div class="col-md-3">
-      <label for="validationCustom05" class="form-label">Zip</label>
-      <input type="text" class="form-control" id="validationCustom05" required />
-      <div class="invalid-feedback">Please provide a valid zip.</div>
-    </div>
-    <div class="col-12">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required />
-        <label class="form-check-label" for="invalidCheck"> Agree to terms and conditions </label>
-        <div class="invalid-feedback">You must agree before submitting.</div>
-      </div>
-    </div>
-    <div class="col-12">
-      <button class="btn btn-primary" type="submit">Submit form</button>
-    </div>
-  </form>
+  </div>
 </template>
 
 <style scoped>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+@import 'https://fonts.googleapis.com/css2family=Plus+Jakarta+Sans:ital,wght@0,200;0,700;1,200&display=swap';
+
+/* 置於畫面正中央 */
+.form-center {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-image: url(/public/photo/library-2.jpg);
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.card {
+  width: 450px;
+  background-color: #ffffff;
+  backdrop-filter: blur(100px);
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+}
+
+h2 {
+  text-align: left;
+  font-weight: 600;
+  font-size: 30px;
+  margin-top: 0;
+}
+
+.register {
+  text-align: center;
+  font-weight: 600;
+  margin-top: 0;
+}
+
+.register {
+  font-size: 30px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gambar-depan {
+  border-radius: 6px;
+}
+
+input {
+  padding: 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: transparent;
+  color: #000000;
+  transition: all 250ms;
+}
+
+input:focus {
+  outline: none;
+  border-color: #3498db;
+  background-color: #eeeeee;
+}
+
+.card form a {
+  padding: 15px 20px;
+  background-color: rgba(17, 17, 17, 0.8);
+  cursor: pointer;
+  color: #ffffff;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tombol-register {
+  padding: 15px 20px;
+  background-color: rgba(17, 17, 17, 0.8);
+  cursor: pointer;
+  color: #ffffff;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+  border: none;
+  outline: none;
+}
+
+.tombol-register:hover,
+a:hover {
+  background-color: rgba(54, 54, 54, 0.8);
+  color: #ffffff;
+}
+
+.switch a {
+  cursor: pointer;
+  color: rgb(0, 47, 255);
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+@media (max-width: 575px) {
+  .card {
+    width: 100%;
+    max-width: 300px;
+    max-height: 880px;
+  }
+  input:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+  .mydict div {
+    width: 100%;
   }
 }
 </style>
 
-<script setup></script>
+<script setup>
+import axios from 'axios'
+
+console.log(import.meta.env.VITE_API_SPOTURL)
+const API_URL = `${import.meta.env.VITE_API_SPOTURL}/categories`
+// 送出註冊表單
+async function sendRegisterForm() {
+  await axios
+    .get('https://localhost:7143/WeatherForecast')
+    .then(function (response) {
+      // handle success
+      console.log(response.data)
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error)
+    })
+}
+</script>
