@@ -3,44 +3,56 @@
   <div class="form-center">
     <div class="container">
       <div class="card">
-        <form method="post" action="">
+        <form @submit.prevent="sendRegisterForm" class="row needs-validation" novalidate>
           <h2 class="register">會員註冊</h2>
-          <input type="text" placeholder="會員名稱(Username)" autocomplete="username" v-model="username"/>
+          <input
+            type="email"
+            id="exampleFormControlInput1"
+            placeholder="電子信箱(Email)"
+            v-model="email"
+            required
+          />
+          <input
+            type="text"
+            placeholder="會員名稱(Username)"
+            autocomplete="username"
+            v-model="username"
+            required
+          />
           <input
             type="password"
             minlength="8"
-            id="password"
+            v-model="password"
             placeholder="輸入密碼(Password)"
             autocomplete="password"
+            required
           />
           <input
             type="password"
             minlength="8"
             id="confirmPassword"
             placeholder="確認密碼(Confirm Password)"
+            required
           />
+          <div class="row">
+            <div class="col">
+              <input
+                type="number"
+                id="phoneNumber"
+                placeholder="電話號碼(phone number)"
+                v-model="phoneNumber"
+                required
+              />
+            </div>
+            <div class="col">
+              <input type="number" id="validation" placeholder="簡訊驗證碼" required />
+            </div>
+          </div>
 
-          <input
-            type="text"
-            id="fullName"
-            placeholder="
-full name"
-          />
-          <input type="number" id="phoneNumber" placeholder="phone number" />
-          <button
-            class="tombol-register"
-            type="submit"
-            id="registerButton"
-            disabled
-            onclick="redirectToLogin()"
-          >
-            Register
+          <button class="tombol-register" type="submit" id="registerButton" formnovalidate>
+            註冊
           </button>
         </form>
-        <div class="switch">
-          <h5>Already have account?</h5>
-          <a href="#">Login</a>
-        </div>
       </div>
     </div>
   </div>
@@ -76,7 +88,7 @@ body {
 }
 
 .card {
-  width: 450px;
+  width: 50%;
   background-color: #ffffff;
   backdrop-filter: blur(100px);
   padding: 20px;
@@ -119,13 +131,13 @@ input {
   border: none;
   border-radius: 5px;
   background-color: transparent;
-  color: #000000;
+  color: #ff8800;
   transition: all 250ms;
 }
 
 input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #db8d34;
   background-color: #eeeeee;
 }
 
@@ -181,7 +193,7 @@ a:hover {
   }
   input:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: #ff9306;
   }
   .mydict div {
     width: 100%;
@@ -191,24 +203,34 @@ a:hover {
 
 <script setup>
 import axios from 'axios'
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
 // 定義表單資料變數
-const username = ref('');
-
+const email = ref('')
+const username = ref('')
+const phoneNumber = ref('')
+const password = ref('')
 
 // 送出註冊表單
 async function sendRegisterForm() {
-  await axios
-    .post(`${API_URL}/register`)
+  console.log(email, username, phoneNumber, password)
+  // Send a POST request
+  await axios({
+    method: 'post',
+    url: `${API_URL}/register`,
+    data: {
+      email: email,
+      name: username,
+      phoneNumber: phoneNumber,
+      password: password
+    }
+  })
     .then(function (response) {
-      // handle success
-      console.log(response.data)
+      console.log(response)
     })
     .catch(function (error) {
-      // handle error
       console.log(error)
     })
 }
