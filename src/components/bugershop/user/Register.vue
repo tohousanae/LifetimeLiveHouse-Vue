@@ -5,22 +5,19 @@
       <div class="card">
         <form method="post" action="">
           <h2 class="register">會員註冊</h2>
-          <p id="passwordError"></p>
-          <input type="text" placeholder="Username" autocomplete="username" />
+          <input type="text" placeholder="會員名稱(Username)" autocomplete="username" v-model="username"/>
           <input
             type="password"
             minlength="8"
             id="password"
-            placeholder="Password"
+            placeholder="輸入密碼(Password)"
             autocomplete="password"
-            oninput="checkPasswords()"
           />
           <input
             type="password"
             minlength="8"
             id="confirmPassword"
-            placeholder="confirm password"
-            oninput="checkPasswords()"
+            placeholder="確認密碼(Confirm Password)"
           />
 
           <input
@@ -194,13 +191,18 @@ a:hover {
 
 <script setup>
 import axios from 'axios'
+import { ref } from 'vue';
 
-console.log(import.meta.env.VITE_API_SPOTURL)
-const API_URL = `${import.meta.env.VITE_API_SPOTURL}/categories`
+const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
+
+// 定義表單資料變數
+const username = ref('');
+
+
 // 送出註冊表單
 async function sendRegisterForm() {
   await axios
-    .get('https://localhost:7143/WeatherForecast')
+    .post(`${API_URL}/register`)
     .then(function (response) {
       // handle success
       console.log(response.data)

@@ -200,9 +200,12 @@ import { onMounted } from 'vue'
 import Navbar from '@/components/bugershop/Navbar.vue'
 import end from '@/components/bugershop/end.vue'
 
+console.log(import.meta.env.VITE_API_SPOTURL)
+const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
+
 async function getWeatherForecast() {
   await axios
-    .get('https://localhost:7143/WeatherForecast')
+    .get(`${API_URL}`)
     .then(function (response) {
       // handle success
       console.log(response.data)
