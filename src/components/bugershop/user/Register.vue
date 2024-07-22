@@ -10,11 +10,11 @@
         <h2>會員註冊</h2>
       </div>
       <div class="col-12 mb-3">
-        <label for="validationCustom01" class="form-label">信箱</label>
+        <label for="validationEmail" class="form-label">信箱</label>
         <input
           type="email"
           class="form-control"
-          id="validationCustom01"
+          id="validationEmail"
           placeholder="name@example.com"
           required
         />
@@ -22,27 +22,47 @@
         <div class="invalid-feedback">此為必填欄位</div>
       </div>
       <div class="col-12 mb-3">
-        <label for="validationCustom02" class="form-label">會員名稱</label>
+        <label for="validationCustomUsername" class="form-label">會員名稱</label>
         <input
           type="text"
           class="form-control"
-          id="validationCustom02"
+          id="validationCustomUsername"
           placeholder="請填寫會員名稱"
           required
         />
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">此為必填欄位</div>
       </div>
-      <div class="col-12 mb-3">
-        <label for="validationCustomUsername" class="form-label">Username</label>
+      <div class="col-md-12 mb-3">
+        <label for="validationPhone" class="form-label">手機號碼</label>
         <div class="input-group has-validation">
           <input
             type="text"
             class="form-control"
-            id="validationCustomUsername"
+            id="validationPhone"
+            placeholder="請填寫手機號碼"
             aria-describedby="inputGroupPrepend"
             required
           />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">此為必填欄位</div>
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="validationPhone" class="form-label">簡訊驗證碼</label>
+        <div class="input-group has-validation">
+          <input
+            type="text"
+            class="form-control"
+            id="validationPhone"
+            placeholder="輸入簡訊驗證碼"
+            aria-describedby="inputGroupPrepend"
+            required
+          />
+          <div class="offset-3">
+            <button type="button" class="btn btn-primary">獲取簡訊驗證碼</button>
+          </div>
           <div class="valid-feedback">Looks good!</div>
           <div class="invalid-feedback">此為必填欄位</div>
         </div>
@@ -78,8 +98,6 @@
 </template>
 
 <style scoped>
-@import 'https://fonts.googleapis.com/css2family=Plus+Jakarta+Sans:ital,wght@0,200;0,700;1,200&display=swap';
-
 /* 置於畫面正中央 */
 .form-center {
   height: 100vh;
