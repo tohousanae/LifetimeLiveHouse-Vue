@@ -1,192 +1,41 @@
 <template>
   <!--註冊表單模板：https://codepen.io/1bbnuuu/pen/dyagBQz-->
   <div class="form-center">
-    <div class="container">
-      <div class="card">
-        <form method="post" action="" class="row g-3 needs-validation" novalidate>
-          <h2 class="register">會員註冊</h2>
-          <input
-            type="text"
-            placeholder="會員名稱(Username)"
-            autocomplete="username"
-            v-model="username"
-          />
-          <input
-            type="password"
-            minlength="8"
-            id="password"
-            placeholder="輸入密碼(Password)"
-            autocomplete="password"
-          />
-          <input
-            type="password"
-            minlength="8"
-            id="confirmPassword"
-            placeholder="確認密碼(Confirm Password)"
-          />
-
-          <input
-            type="text"
-            id="fullName"
-            placeholder="
-full name"
-          />
-          <input type="number" id="phoneNumber" placeholder="phone number" />
-          <button
-            class="tombol-register"
-            type="submit"
-            id="registerButton"
-            disabled
-            onclick="redirectToLogin()"
-          >
-            Register
-          </button>
-        </form>
+    <form
+      @submit.prevent="sendForgetPasswordForm"
+      class="row col-12 col-md-4 d-flex needs-validation"
+      novalidate
+    >
+      <div class="col-12 text-start text-md-center mb-3">
+        <h2>忘記密碼</h2>
       </div>
-    </div>
+      <div class="col-12 mb-3">
+        <label for="validationEmail" class="form-label">信箱</label>
+        <input
+          v-model="email"
+          type="email"
+          class="form-control"
+          id="validationEmail"
+          placeholder="name@example.com"
+          required
+        />
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">此為必填欄位</div>
+      </div>
+      <div class="col-12 mb-3">
+        <button class="btn btn-primary" type="submit">送出</button>
+      </div>
+    </form>
   </div>
 </template>
 
 <style scoped>
-@import 'https://fonts.googleapis.com/css2family=Plus+Jakarta+Sans:ital,wght@0,200;0,700;1,200&display=swap';
-
 /* 置於畫面正中央 */
 .form-center {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background-image: url(/public/photo/library-2.jpg);
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-.card {
-  width: 450px;
-  background-color: #ffffff;
-  backdrop-filter: blur(100px);
-  padding: 20px;
-  border-radius: 8px;
-  border: 2px solid;
-  overflow: hidden;
-  align-items: center;
-  justify-content: center;
-}
-
-h2 {
-  text-align: left;
-  font-weight: 600;
-  font-size: 30px;
-  margin-top: 0;
-}
-
-.register {
-  text-align: center;
-  font-weight: 600;
-  margin-top: 0;
-}
-
-.register {
-  font-size: 30px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.gambar-depan {
-  border-radius: 6px;
-}
-
-input {
-  padding: 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: transparent;
-  color: #000000;
-  transition: all 250ms;
-}
-
-input:focus {
-  outline: none;
-  border-color: #3498db;
-  background-color: #eeeeee;
-}
-
-.card form a {
-  padding: 15px 20px;
-  background-color: rgba(17, 17, 17, 0.8);
-  cursor: pointer;
-  color: #ffffff;
-  text-align: center;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.tombol-register {
-  padding: 15px 20px;
-  background-color: rgba(17, 17, 17, 0.8);
-  cursor: pointer;
-  color: #ffffff;
-  text-align: center;
-  text-decoration: none;
-  font-weight: 600;
-  border: none;
-  outline: none;
-}
-
-.tombol-register:hover,
-a:hover {
-  background-color: rgba(54, 54, 54, 0.8);
-  color: #ffffff;
-}
-
-.switch a {
-  cursor: pointer;
-  color: rgb(0, 47, 255);
-  text-align: center;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.switch {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-@media (max-width: 575px) {
-  .card {
-    width: 100%;
-    max-width: 300px;
-    max-height: 880px;
-  }
-  input:focus {
-    outline: none;
-    border-color: #3498db;
-  }
-  .mydict div {
-    width: 100%;
-  }
 }
 </style>
 
@@ -197,48 +46,44 @@ import { ref } from 'vue'
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
 // 定義表單資料變數
-const username = ref('')
+let email = ref('').value
 
 // 送出註冊表單
-async function sendRegisterForm() {
+async function sendForgetPasswordForm() {
+  // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
+  // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
+
   // Send a POST request
   await axios({
     method: 'post',
-    url: `${API_URL}/register`,
+    url: `${API_URL}/forgetpasswordEmailSendTokenGen`,
     data: {
-      firstName: 'Fred',
-      lastName: 'Flintstone'
+      email: email
     }
   })
-    .then(function (response) {
+    .then(async function (response) {
       console.log(response)
+      await axios({
+        method: 'post',
+        url: `${import.meta.env.VITE_API_SPOTURL}/Mail/send`,
+        data: {
+          toEmail: email,
+          subject: `忘記密碼`,
+          body: `token:${response.data}`
+        }
+      })
+        .then(function (response) {
+          console.log(response)
+          alert(`已送出忘記密碼連結到${email}，請查看您的信箱`)
+        })
+        .catch(function (error) {
+          console.log(error)
+          alert(error.response.data)
+        })
     })
     .catch(function (error) {
       console.log(error)
+      alert(error.response.data)
     })
 }
-
-// Example starter JavaScript for disabling form submissions if there are invalid fields
-;(function () {
-  'use strict'
-
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  var forms = document.querySelectorAll('.needs-validation')
-
-  // Loop over them and prevent submission
-  Array.prototype.slice.call(forms).forEach(function (form) {
-    form.addEventListener(
-      'submit',
-      function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
-
-        form.classList.add('was-validated')
-      },
-      false
-    )
-  })
-})()
 </script>

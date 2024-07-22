@@ -12,6 +12,7 @@
       <div class="col-12 mb-3">
         <label for="validationEmail" class="form-label">信箱</label>
         <input
+          v-model="email"
           type="email"
           class="form-control"
           id="validationEmail"
@@ -24,6 +25,7 @@
       <div class="col-12 mb-3">
         <label for="validationCustomUsername" class="form-label">會員名稱</label>
         <input
+          v-model="username"
           type="text"
           class="form-control"
           id="validationCustomUsername"
@@ -37,6 +39,7 @@
         <label for="validationPhone" class="form-label">手機號碼</label>
         <div class="input-group has-validation">
           <input
+            v-model="phoneNumber"
             type="text"
             class="form-control"
             id="validationPhone"
@@ -49,33 +52,50 @@
         </div>
       </div>
 
-      <div class="col-md-6 mb-3">
-        <label for="validationPhone" class="form-label">簡訊驗證碼</label>
+      <div class="col-md-8 mb-3">
+        <label for="validationSMS" class="form-label">簡訊驗證碼</label>
         <div class="input-group has-validation">
           <input
             type="text"
             class="form-control"
-            id="validationPhone"
+            id="validationSMS"
             placeholder="輸入簡訊驗證碼"
             aria-describedby="inputGroupPrepend"
             required
           />
-          <div class="offset-3">
-            <button type="button" class="btn btn-primary">獲取簡訊驗證碼</button>
-          </div>
+          <button type="button" class="btn btn-primary">獲取簡訊驗證碼</button>
           <div class="valid-feedback">Looks good!</div>
           <div class="invalid-feedback">此為必填欄位</div>
         </div>
       </div>
       <div class="col-12 mb-3">
-        <label for="validationCustom03" class="form-label">City</label>
-        <input type="text" class="form-control" id="validationCustom03" required />
+        <label for="validationPassword" class="form-label">密碼</label>
+        <input
+          v-model="password"
+          type="password"
+          class="form-control"
+          id="validationPassword"
+          placeholder="輸入密碼"
+          required
+        />
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">此為必填欄位</div>
       </div>
       <div class="col-12 mb-3">
-        <label for="validationCustom04" class="form-label">性別</label>
-        <select class="form-select" id="validationCustom04" required>
+        <label for="validationPasswordConfirm" class="form-label">確認密碼</label>
+        <input
+          placeholder="確認密碼"
+          type="password"
+          class="form-control"
+          id="validationPasswordConfirm"
+          required
+        />
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">此為必填欄位</div>
+      </div>
+      <div class="col-12 mb-3">
+        <label for="validationSex" class="form-label">性別</label>
+        <select v-model="sex" class="form-select" id="validationSex" required>
           <option selected disabled value="">請選擇...</option>
           <option>男</option>
           <option>女</option>
@@ -85,8 +105,14 @@
         <div class="invalid-feedback">此為必填欄位</div>
       </div>
       <div class="col-12 mb-3">
-        <label for="validationCustom05" class="form-label">Zip</label>
-        <input type="text" class="form-control" id="validationCustom05" required />
+        <label for="validationBirthday" class="form-label">生日</label>
+        <input
+          v-model="birthday"
+          type="datetime-local"
+          class="form-control"
+          id="validationBirthday"
+          required
+        />
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">此為必填欄位</div>
       </div>
