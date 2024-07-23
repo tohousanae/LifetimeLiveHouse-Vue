@@ -68,8 +68,8 @@ async function sendForgetPasswordForm() {
         url: `${import.meta.env.VITE_API_SPOTURL}/Mail/send`,
         data: {
           toEmail: email,
-          subject: `忘記密碼`,
-          body: `token:${response.data}`
+          subject: `凌晨3點漢堡店-重設密碼通知信`,
+          body: `<h1>Hello World</h1><p>This is an HTML email. token:${response.data}</p>`
         }
       })
         .then(function (response) {
