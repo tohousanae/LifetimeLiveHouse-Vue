@@ -69,7 +69,22 @@ async function sendForgetPasswordForm() {
         data: {
           toEmail: email,
           subject: `凌晨3點漢堡店-重設密碼通知信`,
-          body: `<h1>Hello World</h1><p>This is an HTML email. token:${response.data}</p>`
+          body: ` <!DOCTYPE html>
+                  <html lang="en">
+                  <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>重設密碼</title>
+                  </head>
+                  <body>
+                    <p>${email}您好</p>
+                    <p>密碼重置連結為：</p>
+                    <p>${response.data}</p>
+                    <p>連結有效期限為30分鐘，請在30分鐘內完成完成重設密碼操作，否則連結失效。</p>
+                    <hr>
+                    <p>本信件為系統自動發出，請勿回覆</p>
+                  </body>
+                  </html>`
         }
       })
         .then(function (response) {
