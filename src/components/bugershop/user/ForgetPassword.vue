@@ -42,63 +42,56 @@
 <script setup>
 import axios from 'axios'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
+const router = useRouter()
 
 // 定義表單資料變數
 let email = ref('').value
 
 // 送出註冊表單
 async function sendForgetPasswordForm() {
-  // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
-  // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
-
-  // Send a POST request
-  await axios({
-    method: 'post',
-    url: `${API_URL}/forgetpasswordEmailSendTokenGen`,
-    data: {
+  try {
+    // 發送第一個 POST 請求
+    const response = await axios.post(`${API_URL}/forgetpasswordEmailSendTokenGen`, {
       email: email
-    }
-  })
-    .then(async function (response) {
-      console.log(response)
-      await axios({
-        method: 'post',
-        url: `${import.meta.env.VITE_API_SPOTURL}/Mail/send`,
-        data: {
-          toEmail: email,
-          subject: `凌晨3點漢堡店-重設密碼通知信`,
-          body: ` <!DOCTYPE html>
-                  <html lang="en">
-                  <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>重設密碼</title>
-                  </head>
-                  <body>
-                    <p>${email}您好</p>
-                    <p>密碼重置連結為：</p>
-                    <p>${response.data}</p>
-                    <p>連結有效期限為30分鐘，請在30分鐘內完成完成重設密碼操作，否則連結失效。</p>
-                    <hr>
-                    <p>本信件為系統自動發出，請勿回覆</p>
-                  </body>
-                  </html>`
-        }
-      })
-        .then(function (response) {
-          console.log(response)
-          alert(`已送出忘記密碼連結到${email}，請查看您的信箱`)
-        })
-        .catch(function (error) {
-          console.log(error)
-          alert(error.response.data)
-        })
     })
-    .catch(function (error) {
-      console.log(error)
-      alert(error.response.data)
+    console.log(response)
+
+    // 動態添加路由
+    const randomPath = `/${response.data}`
+    router.addRoute({
+      path: randomPath,
+      component: () => import('@/components/bugershop/user/ResetPasswordForm.vue')
     })
+
+    // 發送第二個 POST 請求
+    const mailResponse = await axios.post(`${import.meta.env.VITE_API_SPOTURL}/Mail/send`, {
+      toEmail: email,
+      subject: `凌晨3點漢堡店-重設密碼通知信`,
+      body: ` <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>重設密碼</title>
+              </head>
+              <body>
+                <p>${email}您好</p>
+                <p>密碼重置連結為：</p>
+                <p><a href="${window.location.origin}${randomPath}">${window.location.origin}${randomPath}</a></p>
+                <p>連結有效期限為30分鐘，請在30分鐘內完成完成重設密碼操作，否則連結失效。</p>
+                <hr>
+                <p>本信件為系統自動發出，請勿回覆</p>
+              </body>
+              </html>`
+    })
+    console.log(mailResponse)
+    alert(`已送出忘記密碼連結到${email}，請查看您的信箱`)
+  } catch (error) {
+    console.log(error)
+    alert(error.response.data)
+  }
 }
 </script>

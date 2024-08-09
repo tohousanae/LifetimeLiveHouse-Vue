@@ -15,6 +15,7 @@
           v-model="email"
           type="email"
           class="form-control"
+          :class="[validationClass]"
           id="validationEmail"
           placeholder="name@example.com"
           required
@@ -84,6 +85,7 @@
       <div class="col-12 mb-3">
         <label for="validationPasswordConfirm" class="form-label">確認密碼</label>
         <input
+          v-model="passwordConfirm"
           placeholder="確認密碼"
           type="password"
           class="form-control"
@@ -143,6 +145,7 @@ const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 let email = ref('').value
 let username = ref('').value
 let password = ref('').value
+let passwordConfirm = ref('').value
 let phoneNumber = ref('').value
 let sex = ref('').value
 let birthday = ref(new Date()).value
@@ -150,11 +153,13 @@ let permission = ref(1000).value
 let phoneValidation = ref(false).value
 let emailValidation = ref(false).value
 
+// 定義class資料變數
+let validationClass = ref('')
+
 // 送出註冊表單
 async function sendRegisterForm() {
   // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
   // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
-
   // Send a POST request
   await axios({
     method: 'post',
