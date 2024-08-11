@@ -42,10 +42,8 @@
 <script setup>
 import axios from 'axios'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
-const router = useRouter()
 
 // 定義表單資料變數
 let email = ref('').value
@@ -58,13 +56,6 @@ async function sendForgetPasswordForm() {
       email: email
     })
     console.log(response)
-
-    // 動態添加路由
-    const randomPath = `${window.location.origin}/${response.data}`
-    router.addRoute({
-      path: randomPath,
-      component: () => import('@/components/bugershop/user/ResetPasswordForm.vue')
-    })
 
     // 發送第二個 POST 請求
     const mailResponse = await axios.post(`${import.meta.env.VITE_API_SPOTURL}/Mail/send`, {
@@ -80,7 +71,7 @@ async function sendForgetPasswordForm() {
               <body>
                 <p>${email}您好</p>
                 <p>密碼重置連結為：</p>
-                <p><a href="${randomPath}">${randomPath}</a></p>
+                <p><a href="${window.location.origin}/${response.data}">${window.location.origin}/${response.data}</a></p>
                 <p>連結有效期限為30分鐘，請在30分鐘內完成完成重設密碼操作，否則連結失效。</p>
                 <hr>
                 <p>本信件為系統自動發出，請勿回覆</p>
