@@ -21,6 +21,7 @@ import { onMounted } from 'vue'
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
 async function getWeatherForecast() {
+  token == 1;
   await axios
     .get(`${API_URL}`)
     .then(function (response) {
