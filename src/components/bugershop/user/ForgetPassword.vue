@@ -30,7 +30,7 @@
 </template>
 
 <style scoped>
-/* 置於畫面正中央 */
+/* 表單置於畫面正中央 */
 .form-center {
   height: 100vh;
   display: flex;

@@ -15,8 +15,27 @@
 </style>
 
 <script setup>
-import { ref } from 'vue'
+import axios from 'axios'
+import { onMounted } from 'vue'
+
+const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
+
+async function getWeatherForecast() {
+  await axios
+    .get(`${API_URL}`)
+    .then(function (response) {
+      // handle success
+      console.log(response.data)
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error)
+    })
+}
+onMounted(() => {
+  getWeatherForecast()
+})
 
 // 定義表單資料變數
-let token = ref(4).value
+let token = 4
 </script>
