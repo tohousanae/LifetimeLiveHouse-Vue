@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is an ResetPwd page</h1>
+    <h1 v-if="">This is an ResetPwd page</h1>
   </div>
 </template>
 
@@ -21,7 +21,6 @@ import { onMounted } from 'vue'
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
 async function getWeatherForecast() {
-  token == 1
   await axios
     .get(`${API_URL}`)
     .then(function (response) {
@@ -36,7 +35,4 @@ async function getWeatherForecast() {
 onMounted(() => {
   getWeatherForecast()
 })
-
-// 定義表單資料變數
-let token = 4
 </script>
