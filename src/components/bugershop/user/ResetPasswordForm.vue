@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1 v-if="">This is an ResetPwd page</h1>
+    <h1 v-if="忘記密碼連結是否可用 == true">This is an ResetPwd page</h1>
   </div>
 </template>
 
