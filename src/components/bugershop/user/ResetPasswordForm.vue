@@ -16,7 +16,11 @@
 
 <script setup>
 import axios from 'axios'
+import { ref } from 'vue'
 import { onMounted } from 'vue'
+
+// 一些變數
+let 忘記密碼連結是否可用 = ref('false').value
 
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
