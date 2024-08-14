@@ -30,6 +30,7 @@ async function getWeatherForecast() {
     .then(function (response) {
       // handle success
       console.log(response.data)
+      忘記密碼連結是否可用 == true
     })
     .catch(function (error) {
       // handle error
