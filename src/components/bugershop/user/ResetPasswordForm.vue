@@ -22,7 +22,7 @@ const API_URL = `${import.meta.env.VITE_API_SPOTURL}/getforgetPwdtoken`
 
 async function getResetPasswordToken() {
   await axios
-    .get(`${API_URL}`)
+    .post(`${API_URL}`)
     .then(function (response) {
       // handle success
       console.log(response.data)
@@ -33,6 +33,6 @@ async function getResetPasswordToken() {
     })
 }
 onMounted(() => {
-  getWeatherForecast()
+  getResetPasswordToken()
 })
 </script>
