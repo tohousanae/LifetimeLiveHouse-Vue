@@ -59,6 +59,7 @@ async function sendForgetPasswordForm() {
     data: { email: email }
   })
     .then(async function (response) {
+      const token = response.data.replace(/\//g, '') // 去除斜線
       console.log(response)
       await axios({
         method: 'post',
@@ -76,7 +77,7 @@ async function sendForgetPasswordForm() {
                   <body>
                     <p>${email}您好</p>
                     <p>密碼重置連結為：</p>
-                    <p>${response.data}</p>
+                    <p><a href="${window.location.origin}/${token}">${window.location.origin}/${token}</a></p>
                     <p>連結有效期限為30分鐘，請在30分鐘內完成完成重設密碼操作，否則連結失效。</p>
                     <hr>
                     <p>本信件為系統自動發出，請勿回覆</p>
