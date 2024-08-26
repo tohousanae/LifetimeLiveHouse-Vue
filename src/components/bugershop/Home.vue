@@ -195,31 +195,8 @@
 </template>
 
 <script setup>
-import axios from 'axios'
-import { onMounted } from 'vue'
 import Navbar from '@/components/bugershop/Navbar.vue'
 import end from '@/components/bugershop/end.vue'
-
-console.log(import.meta.env.VITE_API_SPOTURL)
-const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
-
-async function getWeatherForecast() {
-  await axios
-    .get(`${API_URL}`)
-    .then(function (response) {
-      // handle success
-      console.log(response.data)
-    })
-    .catch(function (error) {
-      // handle error
-      console.log(error)
-    })
-}
-onMounted(() => {
-  getWeatherForecast()
-})
-
-// Make a request for a user with a given ID
 </script>
 
 <style scoped></style>

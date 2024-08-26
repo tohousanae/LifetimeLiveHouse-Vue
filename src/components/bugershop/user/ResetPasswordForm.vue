@@ -17,9 +17,6 @@
 <script setup>
 import axios from 'axios'
 import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
 
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User/getforgetPwdtoken`
 
@@ -33,7 +30,7 @@ async function getResetPasswordToken() {
     .catch(function (error) {
       // handle error
       console.log(error)
-      router.push({ path: '/404' })
+      // router.push({ path: '/404' })
     })
 }
 onMounted(() => {
