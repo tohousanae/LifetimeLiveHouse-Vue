@@ -15,6 +15,7 @@
 ## 進階技術
 1. 忘記密碼用jwt產生token
 2. ByCrypt亂數加密+加鹽註冊密碼與token，提高安全性
+3. CloudFlare自訂網域+CloudFlare Pages部署網頁前端
 
 ## 後端部分
 
