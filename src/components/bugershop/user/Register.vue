@@ -2,7 +2,7 @@
   <!--註冊表單模板：https://codepen.io/1bbnuuu/pen/dyagBQz-->
   <div class="form-center">
     <form
-      @submit.prevent="sendRegisterForm"
+      @submit.prevent="submitForm"
       class="row col-12 col-md-4 d-flex needs-validation"
       novalidate
     >
@@ -21,7 +21,7 @@
           required
         />
         <div class="valid-feedback">Looks good!</div>
-        <div class="invalid-feedback">此為必填欄位</div>
+        <div class="invalid-feedback">信箱格式不正確</div>
       </div>
       <div class="col-12 mb-3">
         <label for="validationCustomUsername" class="form-label">會員名稱</label>
@@ -133,6 +133,11 @@
   justify-content: center;
   align-items: center;
 }
+
+/* 自定義成功提示文字顏色 */
+.valid-feedback {
+  color: #008d00; /* 設定為綠色 */
+}
 </style>
 
 <script setup>
@@ -153,11 +158,39 @@ let permission = ref(1000).value
 let phoneValidation = ref(false).value
 let emailValidation = ref(false).value
 
+// 正則表達式
+// let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+let regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
+
 // 定義class資料變數
 let validationClass = ref('')
 
-// 送出註冊表單
-async function sendRegisterForm() {
+async function submitForm() {
+  // 選取了所有帶有 needs-validation 類別的元素，通常這些元素是表單 (<form>) 元素
+
+  /*
+  Array.prototype.slice.call(forms)：
+  將 NodeList 轉換成一個真正的陣列。這樣可以使用陣列的 .forEach() 方法來遍歷所有的表單元素。
+  */
+
+  /* 
+  form.classList.add('was-validated')：
+  為每一個表單元素添加 was-validated 類別。這是 Bootstrap 5 用來標記表單已經進行了驗證的標誌。它將應用樣式來顯示表單驗證結果，例如標記未通過驗證的輸入框。
+  */
+  let forms = document.querySelectorAll('.needs-validation')
+  await Array.prototype.slice.call(forms).forEach(function (form) {
+    form.classList.add('was-validated')
+  })
+
+  // 检查是否通过验证
+  if (document.querySelectorAll('.was-validated :invalid').length === 0) {
+    // 通过验证，调用 addActivity 方法
+    RegisterAJAX()
+  }
+}
+
+// 送出註冊表單ajax部分
+async function RegisterAJAX() {
   // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
   // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
   // Send a POST request

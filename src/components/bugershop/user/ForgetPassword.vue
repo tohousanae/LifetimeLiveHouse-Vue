@@ -56,6 +56,7 @@ async function sendForgetPasswordForm() {
   await axios({
     method: 'post',
     url: `${API_URL}/forgetpasswordEmailSendTokenGen`,
+    withCredentials: true, //ajax請求有用到cookie時都要設定withCredentials: true
     data: { email: email }
   })
     .then(async function (response) {

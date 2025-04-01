@@ -36,6 +36,8 @@ const router = useRouter()
 
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User/getforgetPwdtoken`
 
+axios.defaults.withCredentials = true
+
 async function getResetPasswordToken() {
   await axios
     .post(`${API_URL}`)
