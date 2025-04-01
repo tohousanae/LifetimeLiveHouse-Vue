@@ -13,8 +13,8 @@
 2. Vite
 
 ## 進階技術
-1. jwt忘記密碼token
-2. ByCrypt亂數加密+加鹽使用者密碼與token
+1. 忘記密碼用jwt產生token
+2. ByCrypt亂數加密+加鹽註冊密碼與token，提高安全性
 
 ## 後端部分
 
