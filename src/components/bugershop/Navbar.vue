@@ -1,13 +1,8 @@
-<script setup>
-import { RouterLink } from 'vue-router'
-import LoginModal from '@/components/bugershop/user/LoginModal.vue'
-</script>
-
 <template>
   <!-- 主導覽 start -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <RouterLink class="navbar-brand" to="/">凌晨3點漢堡店</RouterLink>
+      <RouterLink class="navbar-brand" to="/"></RouterLink>
       <button
         class="navbar-toggler"
         type="button"
@@ -21,6 +16,12 @@ import LoginModal from '@/components/bugershop/user/LoginModal.vue'
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <RouterLink class="nav-link" to="/">Vocaloid歌曲情報</RouterLink>
+          </li>
+          <li class="nav-item">
+            <RouterLink class="nav-link" to="/">Vocaloid新聞/周邊情報</RouterLink>
+          </li>
           <li class="nav-item">
             <RouterLink class="nav-link" to="/about">關於我們</RouterLink>
           </li>
@@ -36,6 +37,7 @@ import LoginModal from '@/components/bugershop/user/LoginModal.vue'
           <li class="nav-item">
             <RouterLink class="nav-link" to="/">聯絡我們</RouterLink>
           </li>
+
         </ul>
         <form class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
@@ -53,8 +55,13 @@ import LoginModal from '@/components/bugershop/user/LoginModal.vue'
   <!-- 主導覽 end -->
 
   <!-- 登入modal start -->
-  <LoginModal></LoginModal>
+  <Login></Login>
   <!-- 登入modal end -->
 </template>
 
 <style scoped></style>
+
+<script setup>
+import { RouterLink } from 'vue-router'
+import Login from '@/components/bugershop/user/Login.vue'
+</script>

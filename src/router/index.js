@@ -4,6 +4,7 @@ import Register from '@/components/bugershop/user/Register.vue'
 import Forgetpassword from '@/components/bugershop/user/ForgetPassword.vue'
 import ResetPasswordForm from '@/components/bugershop/user/ResetPasswordForm.vue'
 import NotFound from '@/components/bugershop/Manager/NotFound.vue'
+import Login from '@/components/bugershop/user/Login.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,6 +41,11 @@ const router = createRouter({
       path: `/404`,
       name: 'notfound',
       component: NotFound
+    },
+    {
+      path: `/login`,
+      name: 'login',
+      component: Login
     }
   ]
 })

@@ -1,5 +1,8 @@
 <template>
   <!--註冊表單模板：https://codepen.io/1bbnuuu/pen/dyagBQz-->
+  <!--主導覽列-->
+  <Navbar></Navbar>
+  <!--主導覽列-->
   <div class="form-center">
     <form
       @submit.prevent="submitForm"
@@ -123,6 +126,10 @@
       </div>
     </form>
   </div>
+
+  <!--footer區域-->
+  <end></end>
+  <!--footer區域-->
 </template>
 
 <style scoped>
@@ -143,6 +150,8 @@
 <script setup>
 import axios from 'axios'
 import { ref } from 'vue'
+import Navbar from '@/components/bugershop/Navbar.vue'
+import end from '@/components/bugershop/end.vue'
 
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
@@ -154,7 +163,6 @@ let passwordConfirm = ref('').value
 let phoneNumber = ref('').value
 let sex = ref('').value
 let birthday = ref(new Date()).value
-let permission = ref(1000).value
 let phoneValidation = ref(false).value
 let emailValidation = ref(false).value
 
@@ -204,7 +212,6 @@ async function RegisterAJAX() {
       password: password,
       sex: sex,
       birthday: birthday,
-      permission: permission,
       phoneValidation: phoneValidation,
       emailValidation: emailValidation
     }
@@ -212,6 +219,7 @@ async function RegisterAJAX() {
     .then(function (response) {
       console.log(response)
       alert(response.data)
+      window.location.href = '/login'
     })
     .catch(function (error) {
       console.log(error)
