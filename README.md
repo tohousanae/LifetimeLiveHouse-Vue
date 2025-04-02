@@ -60,3 +60,6 @@ npm run test:unit
 npm run lint
 ```
 ## 未來規劃
+
+## 圖片素材來源
+1. 丹丹漢堡官網：https://www.dain-dain-hamburger.com/dm4.html
