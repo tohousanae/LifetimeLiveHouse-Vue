@@ -20,7 +20,6 @@
 1. 忘記密碼用jwt產生token
 2. ByCrypt亂數加密+加鹽註冊密碼與token，提高安全性
 3. CloudFlare自訂網域+CloudFlare Pages部署網頁前端
-4. api需驗證才能呼叫
 
 ## 後端部分
 
