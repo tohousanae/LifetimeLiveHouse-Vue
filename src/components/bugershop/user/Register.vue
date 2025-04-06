@@ -5,7 +5,7 @@
   <!--主導覽列-->
   <div class="form-center">
     <form
-      @submit.prevent="submitForm"
+      @submit.prevent="submitRegisterForm"
       class="row col-12 col-md-4 d-flex needs-validation"
       novalidate
     >
@@ -173,28 +173,8 @@ let regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16
 // 定義class資料變數
 let validationClass = ref('')
 
-async function submitForm() {
-  // 選取了所有帶有 needs-validation 類別的元素，通常這些元素是表單 (<form>) 元素
-
-  /*
-  Array.prototype.slice.call(forms)：
-  將 NodeList 轉換成一個真正的陣列。這樣可以使用陣列的 .forEach() 方法來遍歷所有的表單元素。
-  */
-
-  /* 
-  form.classList.add('was-validated')：
-  為每一個表單元素添加 was-validated 類別。這是 Bootstrap 5 用來標記表單已經進行了驗證的標誌。它將應用樣式來顯示表單驗證結果，例如標記未通過驗證的輸入框。
-  */
-  let forms = document.querySelectorAll('.needs-validation')
-  await Array.prototype.slice.call(forms).forEach(function (form) {
-    form.classList.add('was-validated')
-  })
-
-  // 检查是否通过验证
-  if (document.querySelectorAll('.was-validated :invalid').length === 0) {
-    // 通过验证，调用 addActivity 方法
+async function submitRegisterForm() {
     RegisterAJAX()
-  }
 }
 
 // 送出註冊表單ajax部分
@@ -212,14 +192,12 @@ async function RegisterAJAX() {
       password: password,
       sex: sex,
       birthday: birthday,
-      phoneValidation: phoneValidation,
-      emailValidation: emailValidation
     }
   })
     .then(function (response) {
       console.log(response)
       alert(response.data)
-      window.location.href = '/login'
+      window.location.href = '/'
     })
     .catch(function (error) {
       console.log(error)
