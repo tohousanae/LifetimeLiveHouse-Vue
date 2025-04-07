@@ -163,8 +163,6 @@ let passwordConfirm = ref('').value
 let phoneNumber = ref('').value
 let sex = ref('').value
 let birthday = ref(new Date()).value
-let phoneValidation = ref(false).value
-let emailValidation = ref(false).value
 
 // 正則表達式
 // let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
