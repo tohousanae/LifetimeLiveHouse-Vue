@@ -195,8 +195,8 @@
 </template>
 
 <script setup>
-import Navbar from '@/components/bugershop/Navbar.vue'
-import end from '@/components/bugershop/end.vue'
+import Navbar from '@/components/bugershop/Navbar-page.vue'
+import end from '@/components/bugershop/end-page.vue'
 </script>
 
 <style scoped></style>

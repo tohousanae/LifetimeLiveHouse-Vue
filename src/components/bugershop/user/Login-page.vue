@@ -1,5 +1,4 @@
 <template>
-  <!-- Modal -->
   <div
     class="modal fade"
     id="userModal"
@@ -67,6 +66,7 @@
     </div>
   </div>
 </template>
+<!-- Modal -->
 
 <script setup>
 import axios from 'axios'
@@ -82,30 +82,9 @@ let password = ref('').value
 // let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
 async function submitForm() {
-  // 選取了所有帶有 needs-validation 類別的元素，通常這些元素是表單 (<form>) 元素
-
-  /*
-  Array.prototype.slice.call(forms)：
-  將 NodeList 轉換成一個真正的陣列。這樣可以使用陣列的 .forEach() 方法來遍歷所有的表單元素。
-  */
-
-  /* 
-  form.classList.add('was-validated')：
-  為每一個表單元素添加 was-validated 類別。這是 Bootstrap 5 用來標記表單已經進行了驗證的標誌。它將應用樣式來顯示表單驗證結果，例如標記未通過驗證的輸入框。
-  */
-  // let forms = document.querySelectorAll('.needs-validation')
-  // await Array.prototype.slice.call(forms).forEach(function (form) {
-  //   form.classList.add('was-validated')
-  // })
-
-  // 检查是否通过验证
-  // if (document.querySelectorAll('.was-validated :invalid').length === 0) {
-  // 通过验证，调用 addActivity 方法
   Login()
-  // }
 }
 
-// 送出註冊表單ajax部分
 async function Login() {
   // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
   // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
