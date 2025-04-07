@@ -197,6 +197,8 @@
 <script setup>
 import Navbar from '@/components/bugershop/Navbar-page.vue'
 import end from '@/components/bugershop/end-page.vue'
+
+// Python爬蟲推播vocaloid資訊
 </script>
 
 <style scoped></style>

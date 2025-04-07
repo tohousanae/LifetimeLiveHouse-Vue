@@ -153,9 +153,7 @@ import { ref } from 'vue'
 import Navbar from '@/components/bugershop/Navbar-page.vue'
 import end from '@/components/bugershop/end-page.vue'
 
-const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
-
-// 定義表單資料變數
+// 定義表單資料區域變數
 let email = ref('').value
 let username = ref('').value
 let password = ref('').value
@@ -164,42 +162,66 @@ let phoneNumber = ref('').value
 let sex = ref('').value
 let birthday = ref(new Date()).value
 
-// 正則表達式
-// let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-let regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
-
-// 定義class資料變數
-let validationClass = ref('')
-
 async function submitRegisterForm() {
-    RegisterAJAX()
-}
+  // API_URL
+  // 使用 import.meta.env.VITE_API_SPOTURL 環境變數來獲取 API 的基本 URL
+  const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
-// 送出註冊表單ajax部分
-async function RegisterAJAX() {
-  // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
-  // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
-  // Send a POST request
-  await axios({
-    method: 'post',
-    url: `${API_URL}/register`,
-    data: {
-      name: username,
-      email: email,
-      phoneNumber: phoneNumber,
-      password: password,
-      sex: sex,
-      birthday: birthday,
+  // 信箱格式驗證規則：必須包含 @ 符號，並且 @ 符號後面必須有至少一個字元和一個點號，點號後面必須有至少兩個字元
+  let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+  // 密碼高強度驗證規則：至少8個字元，包含至少1個數字、1個大寫字母、1個小寫字母和1個特殊字元，並且不包含空格
+  let regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
+
+  // 電話號碼格式驗證規則：台灣手機號碼格式，開頭為09，後面9位數字
+  let regexPhoneNumber = /^09\d{8}$/
+
+  // 儲存驗證結果
+  let isEmailValid = regexEmail.test(email)
+  let isPasswordValid = regexPassword.test(password)
+  let isPhoneNumberValid = regexPhoneNumber.test(phoneNumber)
+
+  if (isEmailValid && isPasswordValid && password === passwordConfirm && isPhoneNumberValid) {
+    // 如果前端驗證成功，則進行AJAX請求
+    // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
+    // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
+    await axios({
+      method: 'post',
+      url: `${API_URL}/register`,
+      data: {
+        name: username,
+        email: email,
+        phoneNumber: phoneNumber,
+        password: password,
+        sex: sex,
+        birthday: birthday
+      }
+    })
+      .then(function (response) {
+        console.log(response)
+        alert(response.data)
+        window.location.href = '/'
+      })
+      .catch(function (error) {
+        console.log(error)
+        alert(error.response.data)
+      })
+  } else {
+    // 如果驗證失敗，則顯示錯誤訊息
+    if (!isEmailValid) {
+      console.log('信箱格式不正確')
     }
-  })
-    .then(function (response) {
-      console.log(response)
-      alert(response.data)
-      window.location.href = '/'
-    })
-    .catch(function (error) {
-      console.log(error)
-      alert(error.response.data)
-    })
+    if (!isPasswordValid) {
+      console.log(
+        '密碼格式不正確，必須包含至少1個數字、1個大寫字母、1個小寫字母和1個特殊字元，並且不包含空格'
+      )
+    }
+    if (password !== passwordConfirm) {
+      console.log('密碼與確認密碼不一致')
+    }
+    if (!isPhoneNumberValid) {
+      console.log('手機號碼格式不正確，必須為09開頭的10位數字')
+    }
+  }
 }
 </script>
