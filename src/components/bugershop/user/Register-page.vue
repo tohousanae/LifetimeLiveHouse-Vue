@@ -18,7 +18,7 @@
           v-model="email"
           type="email"
           class="form-control"
-          :class="[validationClass]"
+          :class="{'is-valid': isEmailValid, 'is-invalid': !isEmailValid}"
           id="validationEmail"
           placeholder="name@example.com"
           required
@@ -153,7 +153,7 @@ import { ref } from 'vue'
 import Navbar from '@/components/bugershop/Navbar-page.vue'
 import end from '@/components/bugershop/end-page.vue'
 
-// 定義表單資料區域變數
+// 定義表單資料變數
 let email = ref('').value
 let username = ref('').value
 let password = ref('').value
@@ -162,24 +162,24 @@ let phoneNumber = ref('').value
 let sex = ref('').value
 let birthday = ref(new Date()).value
 
+// 使用 import.meta.env.VITE_API_SPOTURL 環境變數來獲取 API 的基本 URL
+const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
+
+// 信箱格式驗證規則：必須包含 @ 符號，並且 @ 符號後面必須有至少一個字元和一個點號，點號後面必須有至少兩個字元
+let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+// 密碼高強度驗證規則：至少8個字元，包含至少1個數字、1個大寫字母、1個小寫字母和1個特殊字元，並且不包含空格
+let regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
+
+// 電話號碼格式驗證規則：台灣手機號碼格式，開頭為09，後面9位數字
+let regexPhoneNumber = /^09\d{8}$/
+
+// 儲存驗證結果
+let isEmailValid = regexEmail.test(email)
+let isPasswordValid = regexPassword.test(password)
+let isPhoneNumberValid = regexPhoneNumber.test(phoneNumber)
+
 async function submitRegisterForm() {
-  // API_URL
-  // 使用 import.meta.env.VITE_API_SPOTURL 環境變數來獲取 API 的基本 URL
-  const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
-
-  // 信箱格式驗證規則：必須包含 @ 符號，並且 @ 符號後面必須有至少一個字元和一個點號，點號後面必須有至少兩個字元
-  let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-  // 密碼高強度驗證規則：至少8個字元，包含至少1個數字、1個大寫字母、1個小寫字母和1個特殊字元，並且不包含空格
-  let regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
-
-  // 電話號碼格式驗證規則：台灣手機號碼格式，開頭為09，後面9位數字
-  let regexPhoneNumber = /^09\d{8}$/
-
-  // 儲存驗證結果
-  let isEmailValid = regexEmail.test(email)
-  let isPasswordValid = regexPassword.test(password)
-  let isPhoneNumberValid = regexPhoneNumber.test(phoneNumber)
 
   if (isEmailValid && isPasswordValid && password === passwordConfirm && isPhoneNumberValid) {
     // 如果前端驗證成功，則進行AJAX請求
