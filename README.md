@@ -12,11 +12,12 @@
 ## 基本技術
 1. Vue.js框架
 2. vite+.net web api前後端分離
+3. 透過 ASP.NET Identity 使用簡訊和電子郵件進行的雙重要素驗證
 
 ## 進階技術
 1. 忘記密碼用jwt產生token
-2. ByCrypt亂數加密+加鹽註冊密碼與token，提高安全性
-3. CloudFlare自訂網域+CloudFlare Pages部署網頁前端
+2. ByCrypt亂數加密註冊密碼與token
+3. CloudFlare自訂網域+CloudFlare Pages部署網頁前端，以cdn技術防ddos攻擊
 
 ## 後端部分
 
@@ -65,8 +66,9 @@ npm run lint
 ## 重要聲明
 本專案內容為程式交流學習與推廣初音未來與v家之用，不作為商業用途，"初音未來早午餐店"為虛構店家，現實並沒有此店家的存在，所有素材來源版權歸版權擁有者所有。
 
-## 素材來源網站
+## 引用資料
 1. https://pjsekai.fandom.com/zh-tw/wiki/%E5%88%9D%E9%9F%B3%E6%9C%AA%E4%BE%86
+2. https://learn.microsoft.com/zh-tw/aspnet/identity/overview/features-api/two-factor-authentication-using-sms-and-email-with-aspnet-identity
 
 ## 模板來源
 資展國際
