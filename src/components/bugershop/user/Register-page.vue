@@ -20,7 +20,7 @@
           v-model="email"
           type="email"
           class="form-control"
-          :class="{'is-valid': isEmailValid, 'is-invalid': !isEmailValid && email !== ''}"
+          :class="{ 'is-valid': isEmailValid, 'is-invalid': !isEmailValid && email !== '' }"
           id="validationEmail"
           placeholder="name@example.com"
           @input="validateEmail"
@@ -39,7 +39,10 @@
           class="form-control"
           id="validationCustomUsername"
           placeholder="請填寫會員名稱"
-          :class="{'is-valid': isUsernameValid, 'is-invalid': !isUsernameValid && username !== ''}"
+          :class="{
+            'is-valid': isUsernameValid,
+            'is-invalid': !isUsernameValid
+          }"
           required
         />
         <div class="valid-feedback">Looks good!</div>
@@ -54,7 +57,10 @@
             v-model="phoneNumber"
             type="text"
             class="form-control"
-            :class="{'is-valid': isPhoneNumberValid, 'is-invalid': !isPhoneNumberValid && phoneNumber !== ''}"
+            :class="{
+              'is-valid': isPhoneNumberValid,
+              'is-invalid': !isPhoneNumberValid && phoneNumber !== ''
+            }"
             id="validationPhone"
             placeholder="請填寫手機號碼"
             @input="validatePhoneNumber"
@@ -90,7 +96,10 @@
           v-model="password"
           type="password"
           class="form-control"
-          :class="{'is-valid': isPasswordValid, 'is-invalid': !isPasswordValid && password !== ''}"
+          :class="{
+            'is-valid': isPasswordValid,
+            'is-invalid': !isPasswordValid && password !== ''
+          }"
           id="validationPassword"
           placeholder="輸入密碼"
           @input="validatePassword"
@@ -109,7 +118,10 @@
           v-model="passwordConfirm"
           type="password"
           class="form-control"
-          :class="{'is-valid': isPasswordConfirmValid, 'is-invalid': !isPasswordConfirmValid && passwordConfirm !== ''}"
+          :class="{
+            'is-valid': isPasswordConfirmValid,
+            'is-invalid': !isPasswordConfirmValid && passwordConfirm !== ''
+          }"
           id="validationPasswordConfirm"
           placeholder="確認密碼"
           @input="validatePasswordConfirm"
@@ -221,10 +233,14 @@ function validatePassword() {
 function validatePasswordConfirm() {
   isPasswordConfirmValid.value = passwordConfirm.value === password.value
 }
-
 // 提交表單
 async function submitRegisterForm() {
-  if (isEmailValid.value && isPhoneNumberValid.value && isPasswordValid.value && isPasswordConfirmValid.value) {
+  if (
+    isEmailValid.value &&
+    isPhoneNumberValid.value &&
+    isPasswordValid.value &&
+    isPasswordConfirmValid.value
+  ) {
     await axios({
       method: 'post',
       url: `${API_URL}/register`,
@@ -246,6 +262,6 @@ async function submitRegisterForm() {
         console.log(error)
         alert(error.response.data)
       })
-  } 
+  }
 }
 </script>
