@@ -39,14 +39,12 @@
           class="form-control"
           id="validationCustomUsername"
           placeholder="請填寫會員名稱"
-          :class="{
-            'is-valid': isUsernameValid,
-            'is-invalid': !isUsernameValid
-          }"
+          @input="validateUsername"
+          :class="{'is-valid': isUsernameValid, 'is-invalid': !isUsernameValid && username !== ''}"
           required
         />
         <div class="valid-feedback">Looks good!</div>
-        <div class="invalid-feedback">此為必填欄位</div>
+        <div class="invalid-feedback">會員名稱必須為 1 到 10 個字元的英數字</div>
       </div>
 
       <!-- 手機號碼 -->
@@ -216,6 +214,10 @@ const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 const regexPhoneNumber = /^09\d{8}$/
+const regexUsername = /^[a-zA-Z0-9]{1,10}$/
+const regexSMS = /^[0-9]{6}$/
+const regexSex = /^(男|女|其他)$/
+const regexBirthday = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/
 
 // 驗證函式，輸入時即時更新驗證狀態
 function validateEmail() {
@@ -233,6 +235,11 @@ function validatePassword() {
 function validatePasswordConfirm() {
   isPasswordConfirmValid.value = passwordConfirm.value === password.value
 }
+
+function validateUsername() {
+  isUsernameValid.value = regexUsername.test(username.value)
+}
+
 // 提交表單
 async function submitRegisterForm() {
   if (
