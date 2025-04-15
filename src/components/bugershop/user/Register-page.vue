@@ -79,6 +79,10 @@
             id="validationSMS"
             placeholder="輸入簡訊驗證碼"
             aria-describedby="inputGroupPrepend"
+            :class="{
+              'is-valid': isSMSValid,
+              'is-invalid': !isSMSValid
+            }"
             required
           />
           <button type="button" class="btn btn-primary">獲取簡訊驗證碼</button>
@@ -215,7 +219,6 @@ const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 const regexPhoneNumber = /^09\d{8}$/
 const regexUsername = /^[a-zA-Z0-9]{1,10}$/
-const regexSMS = /^[0-9]{6}$/
 const regexSex = /^(男|女|其他)$/
 const regexBirthday = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/
 
