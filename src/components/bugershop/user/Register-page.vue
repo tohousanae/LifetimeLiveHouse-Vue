@@ -40,7 +40,10 @@
           id="validationCustomUsername"
           placeholder="請填寫會員名稱"
           @input="validateUsername"
-          :class="{'is-valid': isUsernameValid, 'is-invalid': !isUsernameValid && username !== ''}"
+          :class="{
+            'is-valid': isUsernameValid,
+            'is-invalid': !isUsernameValid && username !== ''
+          }"
           required
         />
         <div class="valid-feedback">Looks good!</div>
@@ -79,10 +82,6 @@
             id="validationSMS"
             placeholder="輸入簡訊驗證碼"
             aria-describedby="inputGroupPrepend"
-            :class="{
-              'is-valid': isSMSValid,
-              'is-invalid': !isSMSValid
-            }"
             required
           />
           <button type="button" class="btn btn-primary">獲取簡訊驗證碼</button>
@@ -207,9 +206,6 @@ let isPhoneNumberValid = ref(false)
 let isPasswordValid = ref(false)
 let isPasswordConfirmValid = ref(false)
 let isUsernameValid = ref(false)
-let isSMSValid = ref(false)
-let isSexValid = ref(false)
-let isBirthdayValid = ref(false)
 
 // 使用 import.meta.env.VITE_API_SPOTURL 環境變數來獲取 API 的基本 URL
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
@@ -219,8 +215,6 @@ const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 const regexPhoneNumber = /^09\d{8}$/
 const regexUsername = /^[a-zA-Z0-9]{1,10}$/
-const regexSex = /^(男|女|其他)$/
-const regexBirthday = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/
 
 // 驗證函式，輸入時即時更新驗證狀態
 function validateEmail() {
