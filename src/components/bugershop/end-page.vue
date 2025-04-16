@@ -8,7 +8,7 @@
                         <use xlink:href="#bootstrap"></use>
                     </svg>
                 </a>
-                <span class="text-muted"><br>本網站僅供網頁應用程式開發交流練習之用，現實並不存在此店家，亦與初音未來官方無任何關係，請不要真的跑去本店消費謝謝 </span>
+                <span class="text-muted"><br>本網站僅作為展示網頁應用程式開發、雲端技術應用練習成果用，無實際消費功能，現實當中亦無本店家存在，請勿真的跑去本店消費謝謝。</span>
             </div>
 
             <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">

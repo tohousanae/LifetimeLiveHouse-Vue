@@ -47,7 +47,7 @@
           required
         />
         <div class="valid-feedback">Looks good!</div>
-        <div class="invalid-feedback">會員名稱必須為 1 到 10 個字元的英數字</div>
+        <div class="invalid-feedback">會員名稱至少1字元，最多10字元</div>
       </div>
 
       <!-- 手機號碼 -->
@@ -214,7 +214,6 @@ const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 const regexPhoneNumber = /^09\d{8}$/
-const regexUsername = /^[a-zA-Z0-9]{1,10}$/
 
 // 驗證函式，輸入時即時更新驗證狀態
 function validateEmail() {
@@ -234,7 +233,7 @@ function validatePasswordConfirm() {
 }
 
 function validateUsername() {
-  isUsernameValid.value = regexUsername.test(username.value)
+  isUsernameValid.value = username.value.length >= 1 && username.value.length <= 10
 }
 
 // 提交表單
@@ -243,7 +242,8 @@ async function submitRegisterForm() {
     isEmailValid.value &&
     isPhoneNumberValid.value &&
     isPasswordValid.value &&
-    isPasswordConfirmValid.value
+    isPasswordConfirmValid.value &&
+    isUsernameValid
   ) {
     await axios({
       method: 'post',
@@ -266,6 +266,9 @@ async function submitRegisterForm() {
         console.log(error)
         alert(error.response.data)
       })
+  }
+  else if(username.value.length == 0) {
+    isUsernameValid.value = false
   }
 }
 </script>
