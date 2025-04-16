@@ -266,8 +266,7 @@ async function submitRegisterForm() {
         console.log(error)
         alert(error.response.data)
       })
-  }
-  else if(username.value.length == 0) {
+  } else if (username.value.length == 0) {
     isUsernameValid.value = false
   }
 }
