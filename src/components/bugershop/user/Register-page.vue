@@ -14,10 +14,11 @@
       </div>
 
       <!-- 信箱 -->
+      <!-- .trim去除輸入值兩端空格 -->
       <div class="col-12 mb-3">
         <label for="validationEmail" class="form-label">信箱</label>
         <input
-          v-model="email"
+          v-model.trim="email"
           type="email"
           class="form-control"
           :class="{ 'is-valid': isEmailValid, 'is-invalid': !isEmailValid && email !== '' }"
@@ -34,7 +35,7 @@
       <div class="col-12 mb-3">
         <label for="validationCustomUsername" class="form-label">會員名稱</label>
         <input
-          v-model="username"
+          v-model.trim="username"
           type="text"
           class="form-control"
           id="validationCustomUsername"
@@ -55,7 +56,7 @@
         <label for="validationPhone" class="form-label">手機號碼</label>
         <div class="input-group has-validation">
           <input
-            v-model="phoneNumber"
+            v-model.trim="phoneNumber"
             type="text"
             class="form-control"
             :class="{
@@ -77,6 +78,7 @@
         <label for="validationSMS" class="form-label">簡訊驗證碼</label>
         <div class="input-group has-validation">
           <input
+            v-model.trim="smsCode"
             type="text"
             class="form-control"
             id="validationSMS"
@@ -94,7 +96,7 @@
       <div class="col-12 mb-3">
         <label for="validationPassword" class="form-label">密碼</label>
         <input
-          v-model="password"
+          v-model.trim="password"
           type="password"
           class="form-control"
           :class="{
@@ -116,7 +118,7 @@
       <div class="col-12 mb-3">
         <label for="validationPasswordConfirm" class="form-label">確認密碼</label>
         <input
-          v-model="passwordConfirm"
+          v-model.trim="passwordConfirm"
           type="password"
           class="form-control"
           :class="{
@@ -135,7 +137,7 @@
       <!-- 性別 -->
       <div class="col-12 mb-3">
         <label for="validationSex" class="form-label">性別</label>
-        <select v-model="sex" class="form-select" id="validationSex" required>
+        <select v-model.trim="sex" class="form-select" id="validationSex" required>
           <option selected disabled value="">請選擇...</option>
           <option>男</option>
           <option>女</option>
@@ -149,7 +151,7 @@
       <div class="col-12 mb-3">
         <label for="validationBirthday" class="form-label">生日</label>
         <input
-          v-model="birthday"
+          v-model.trim="birthday"
           type="datetime-local"
           class="form-control"
           id="validationBirthday"
@@ -266,9 +268,10 @@ async function submitRegisterForm() {
         console.log(error)
         alert(error.response.data)
       })
-  } 
-  if (username.value.trim() === '') {
-    isUsernameValid.value = false
+  } else {
+    if (username.value.length === 0) {
+      isUsernameValid.value = false
+    }
   }
 }
 </script>
