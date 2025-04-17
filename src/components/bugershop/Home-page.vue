@@ -1,3 +1,5 @@
+<!--npm套件更新方法：https://jimhuang.dev/npm/version/-->
+
 <template>
   <!--主導覽列-->
   <Navbar></Navbar>
