@@ -1,4 +1,4 @@
-<!--npm套件更新方法：https://jimhuang.dev/npm/version/-->
+<!--npm套件更新方法：https://jimhuang.dev/npm/version/ -->
 
 <template>
   <!--主導覽列-->
