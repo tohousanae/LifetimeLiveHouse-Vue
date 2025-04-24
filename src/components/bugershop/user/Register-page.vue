@@ -217,7 +217,7 @@ const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 const regexPhoneNumber = /^09\d{8}$/
 
-// 驗證函式，輸入時即時更新驗證狀態
+// 輸入時即時更新驗證狀態
 function validateEmail() {
   isEmailValid.value = regexEmail.test(email.value)
 }
