@@ -4,24 +4,28 @@
 結合商品訂購與Vocaloid資訊推播功能
 
 ## 功能
-1. 會員相關：會員登入/註冊/修改基本資料/忘記密碼/第三方登入/註冊手機簡訊、信箱驗證等
+1. 會員相關：會員登入/註冊/修改基本資料/忘記密碼/第三方登入/手機簡訊、信箱驗證
 2. 購物相關：瀏覽商品/加入購物車/送出訂單/選取付款方式(串接第三方金流)/外帶或外送/優惠券折扣
 3. 員工後臺：分店管理/營業額統計等
-4. 首頁/導覽頁：商品介紹/新品上市/vocaloid音樂周邊情報(使用爬蟲技術取得資料)。
+4. 首頁/導覽頁：商品介紹/新品上市/vocaloid音樂周邊情報
 
-## 基本技術
 
-### 技術
-1. SPA：Vite+Vue3 + Vue routing
-2. .net core 9(後端)
-3. 透過 ASP.NET Identity 使用簡訊和電子郵件進行的雙重要素驗證
+## 技術
+### 前端
+1. SPA：Vite + Vue3 + Vue routing
+2. AJAX
+3. 簡訊、電子郵件雙因素驗證
 4. google第三方登入
 5. Jwt忘記密碼
-2. ByCrypt亂數加密使用者密碼
-3. CloudFlare DNS+Pages部屬前端
+6. ByCrypt亂數加密使用者密碼
+7. Cloudflare：網域託管(抗ddos) + 電子郵件路由 + Pages部署
 
-## 後端部分
+### 後端
+1. .net core 9(後端)
+2. 串接綠界金流
+3. Python爬蟲
 
+## 後端github頁面
 https://github.com/tohousanae/am3buger-WebApi
 
 ## Recommended IDE Setup
