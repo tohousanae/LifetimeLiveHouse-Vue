@@ -23,7 +23,7 @@
 1. .net core 9(後端)
 2. 串接綠界金流
 3. Python爬蟲
-4. azure key vault隱藏gmail金鑰等機密資料
+4. azure：app service + sql database(sql server)雲端資料庫 + key vault隱藏gmail金鑰等機密資料
 
 ## 後端github頁面
 https://github.com/tohousanae/am3buger-WebApi
