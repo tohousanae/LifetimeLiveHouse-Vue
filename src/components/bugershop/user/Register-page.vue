@@ -35,7 +35,7 @@
       <div class="col-12 mb-3">
         <label for="validationCustomUsername" class="form-label">會員名稱</label>
         <input
-          v-model.trim="username"
+          v-model.trim="name"
           type="text"
           class="form-control"
           id="validationCustomUsername"
@@ -195,7 +195,7 @@ import end from '@/components/bugershop/end-page.vue'
 
 // 表單資料
 let email = ref('')
-let username = ref('')
+let name = ref('')
 let password = ref('')
 let passwordConfirm = ref('')
 let phoneNumber = ref('')
@@ -235,7 +235,7 @@ function validatePasswordConfirm() {
 }
 
 function validateUsername() {
-  isUsernameValid.value = username.value.length >= 1 && username.value.length <= 10
+  isUsernameValid.value = name.value.length >= 1 && name.value.length <= 10
 }
 
 // 提交表單
@@ -251,7 +251,7 @@ async function submitRegisterForm() {
       method: 'post',
       url: `${API_URL}/register`,
       data: {
-        name: username.value,
+        name: name.value,
         email: email.value,
         phoneNumber: phoneNumber.value,
         password: password.value,
