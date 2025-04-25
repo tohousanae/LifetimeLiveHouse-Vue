@@ -23,7 +23,6 @@
 1. 忘記密碼用jwt產生token
 2. ByCrypt亂數加密註冊密碼與token
 3. CloudFlare DNS+Pages部屬前端
-4. python爬蟲
 
 ## 後端部分
 
