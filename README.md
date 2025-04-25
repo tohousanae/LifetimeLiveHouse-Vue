@@ -77,7 +77,6 @@ npm run lint
 ## 參考引用資料
 1. https://pjsekai.fandom.com/zh-tw/wiki/%E5%88%9D%E9%9F%B3%E6%9C%AA%E4%BE%86
 2. https://learn.microsoft.com/zh-tw/aspnet/identity/overview/features-api/two-factor-authentication-using-sms-and-email-with-aspnet-identity
-3. https://ithelp.ithome.com.tw/articles/10307773
 
 ## 模板來源
 資展國際
