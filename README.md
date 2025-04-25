@@ -12,7 +12,7 @@
 
 ## 技術
 ### 前端
-1. SPA：Vite + Vue3 + Vue routing
+1. SPA框架：Vite + Vue3 + Vue routing
 2. AJAX
 3. 簡訊、電子郵件雙因素驗證
 4. google第三方登入
