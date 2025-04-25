@@ -7,7 +7,7 @@
 1. 會員相關：會員登入/註冊/修改基本資料/忘記密碼/第三方登入/註冊手機簡訊、信箱驗證等
 2. 購物相關：瀏覽商品/加入購物車/送出訂單/選取付款方式(串接第三方金流)/外帶或外送/優惠券折扣
 3. 員工後臺：分店管理/營業額統計等
-4. 首頁：商品介紹/新品上市/python爬蟲取得vocaloid情報。
+4. 首頁/導覽頁：商品介紹/新品上市/vocaloid音樂周邊情報。
 
 ## 基本技術
 
@@ -22,7 +22,8 @@
 ## 進階技術
 1. 忘記密碼用jwt產生token
 2. ByCrypt亂數加密註冊密碼與token
-3. CloudFlare自訂網域+CloudFlare Pages部署網頁前端，以cdn技術防ddos攻擊
+3. CloudFlare DNS+Pages部屬網頁
+4. python爬蟲
 
 ## 後端部分
 
@@ -65,8 +66,9 @@ npm run test:unit
 ```sh
 npm run lint
 ```
-## 未來規劃
-與台灣各家acg相關廠商甚至初音未來官方合作，代售周邊或是展演票券，與官方合作舉辦初音未來相關活動等。
+
+## 參考系統
+麥當勞歡樂送
 
 ## 重要聲明
 本專案內容為程式交流學習與推廣初音未來與v家之用，不作為商業用途，網站功能僅為展示成果用，無法實際進行商品交易，"初音未來早午餐店"為虛構店家，現實並沒有此店家的存在，所有素材來源版權歸版權擁有者所有。
@@ -74,6 +76,7 @@ npm run lint
 ## 參考引用資料
 1. https://pjsekai.fandom.com/zh-tw/wiki/%E5%88%9D%E9%9F%B3%E6%9C%AA%E4%BE%86
 2. https://learn.microsoft.com/zh-tw/aspnet/identity/overview/features-api/two-factor-authentication-using-sms-and-email-with-aspnet-identity
+3. 資料庫系統 PROJECT 2-歡樂送線上訂餐系統 https://www.mis.nsysu.edu.tw/db-book/DBProject2009Fall/db_98_03/report.ppt
 
 ## 模板來源
 資展國際
