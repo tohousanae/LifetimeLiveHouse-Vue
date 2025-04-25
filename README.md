@@ -11,17 +11,13 @@
 
 ## 基本技術
 
-### 整體技術
-1. Vue.js框架
-2. vite+.net web api前後端分離
-
-### 會員技術
-4. 透過 ASP.NET Identity 使用簡訊和電子郵件進行的雙重要素驗證
-5. google第三方登入
-
-## 進階技術
-1. 忘記密碼用jwt產生token
-2. ByCrypt亂數加密註冊密碼與token
+### 技術
+1. SPA：Vite+Vue3 + Vue routing
+2. .net core 9(後端)
+3. 透過 ASP.NET Identity 使用簡訊和電子郵件進行的雙重要素驗證
+4. google第三方登入
+5. Jwt忘記密碼
+2. ByCrypt亂數加密使用者密碼
 3. CloudFlare DNS+Pages部屬前端
 
 ## 後端部分
