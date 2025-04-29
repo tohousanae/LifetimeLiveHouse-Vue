@@ -193,7 +193,7 @@ import { ref } from 'vue'
 import Navbar from '@/components/bugershop/Navbar-page.vue'
 import end from '@/components/bugershop/end-page.vue'
 
-// 表單資料
+// 表單資料的v-model
 let email = ref('')
 let name = ref('')
 let password = ref('')
