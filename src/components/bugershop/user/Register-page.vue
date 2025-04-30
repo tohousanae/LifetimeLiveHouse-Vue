@@ -43,7 +43,7 @@
           @input="validateUsername"
           :class="{
             'is-valid': isUsernameValid,
-            'is-invalid': !isUsernameValid && username !== ''
+            'is-invalid': !isUsernameValid && name !== ''
           }"
           required
         />
@@ -201,6 +201,7 @@ let passwordConfirm = ref('')
 let phoneNumber = ref('')
 let sex = ref('')
 let birthday = ref(new Date())
+let smsCode = ref('')
 
 // 驗證狀態
 let isEmailValid = ref(false)
@@ -234,8 +235,9 @@ function validatePasswordConfirm() {
   isPasswordConfirmValid.value = passwordConfirm.value === password.value
 }
 
+// 使用者名稱上限
 function validateUsername() {
-  isUsernameValid.value = name.value.length >= 1 && name.value.length <= 10
+  isUsernameValid.value = name.value.length >= 1 && name.value.length <= 64
 }
 
 // 提交表單
@@ -269,7 +271,7 @@ async function submitRegisterForm() {
         alert(error.response.data)
       })
   } else {
-    if (username.value.length === 0) {
+    if (name.value.length === 0) {
       isUsernameValid.value = false
     }
   }
