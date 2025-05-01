@@ -48,7 +48,7 @@
           required
         />
         <div class="valid-feedback">Looks good!</div>
-        <div class="invalid-feedback">會員名稱至少1字元，最多10字元</div>
+        <div class="invalid-feedback">會員名稱至少1字元，最多64字元</div>
       </div>
 
       <!-- 手機號碼 -->
