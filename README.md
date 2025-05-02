@@ -25,7 +25,7 @@
 2. 串接綠界金流
 3. Python爬蟲
 4. azure部署：app service + sql database(sql server)雲端資料庫 + key vault隱藏gmail金鑰等機密資料
-5. 常讀取資料快取(記憶體+redis)
+5. redis快取
 
 ## 後端的github頁面
 https://github.com/tohousanae/am3buger-WebApi
