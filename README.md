@@ -72,6 +72,9 @@ npm run lint
 ## 重要聲明
 本專案內容為程式交流學習之用，不作為商業用途，，所有素材來源版權歸版權擁有者所有。
 
+## Piapro角色創作規範
+https://www.tw-pjsekai.com/news_detail.html?id=6998114598104701697
+
 ## 參考引用資料
 1. https://pjsekai.fandom.com/zh-tw/wiki/%E5%88%9D%E9%9F%B3%E6%9C%AA%E4%BE%86
 2. https://learn.microsoft.com/zh-tw/aspnet/identity/overview/features-api/two-factor-authentication-using-sms-and-email-with-aspnet-identity
