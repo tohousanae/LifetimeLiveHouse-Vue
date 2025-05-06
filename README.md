@@ -1,4 +1,4 @@
-# 初音未來便利店-前端(非官方)
+# -前端(非官方)
 
 ## 網站特色
 結合餐點訂購與Vocaloid資訊推播功能
@@ -15,7 +15,7 @@
 1. SPA框架：Vite + Vue3 + Vue routing
 2. AJAX
 3. Jwt忘記密碼
-4. ByCrypt亂數加密使用者密碼
+4. ByCrypt使用者密碼加密儲存
 5. Cloudflare：網域託管(抗ddos) + 電子郵件路由 + Pages部署
 
 ### 後端
