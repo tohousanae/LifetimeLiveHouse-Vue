@@ -12,7 +12,7 @@
 
 ## 技術
 ### 前端
-1. SPA框架：Vite + Vue3 + Vue routing
+1. SPA單頁式應用：Vite + Vue3 + Vue routing
 2. AJAX
 3. Jwt忘記密碼
 4. ByCrypt使用者密碼加密儲存
