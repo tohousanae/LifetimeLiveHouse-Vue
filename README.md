@@ -15,7 +15,7 @@
 1. SPA單頁式應用：Vite + Vue3 + Vue routing
 2. AJAX
 3. Jwt忘記密碼
-4. ByCrypt使用者密碼加密儲存
+4. ByCrypt密碼加密儲存
 5. Cloudflare：網域託管(抗ddos) + 電子郵件路由 + Pages部署
 
 ### 後端
