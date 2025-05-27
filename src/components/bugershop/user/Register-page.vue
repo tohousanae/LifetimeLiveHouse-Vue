@@ -193,22 +193,22 @@ import { ref } from 'vue'
 import Navbar from '@/components/bugershop/Navbar-page.vue'
 import end from '@/components/bugershop/end-page.vue'
 
-// 表單資料的v-model
-let email = ref('')
-let name = ref('')
-let password = ref('')
-let passwordConfirm = ref('')
-let phoneNumber = ref('')
-let sex = ref('')
-let birthday = ref(new Date())
-let smsCode = ref('')
+// 表單輸入值
+let email = ref('').value
+let name = ref('').value
+let password = ref('').value
+let passwordConfirm = ref('').value
+let phoneNumber = ref('').value
+let sex = ref('').value
+let birthday = ref(new Date()).value
+let smsCode = ref('').value
 
 // 驗證狀態
-let isEmailValid = ref(false)
-let isPhoneNumberValid = ref(false)
-let isPasswordValid = ref(false)
-let isPasswordConfirmValid = ref(false)
-let isUsernameValid = ref(false)
+let isEmailValid = ref(false).value
+let isPhoneNumberValid = ref(false).value
+let isPasswordValid = ref(false).value
+let isPasswordConfirmValid = ref(false).value
+let isUsernameValid = ref(false).value
 
 // 使用 import.meta.env.VITE_API_SPOTURL 環境變數來獲取 API 的基本 URL
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
@@ -220,44 +220,44 @@ const regexPhoneNumber = /^09\d{8}$/
 
 // 輸入時即時更新驗證狀態
 function validateEmail() {
-  isEmailValid.value = regexEmail.test(email.value)
+  isEmailValid = regexEmail.test(email)
 }
 
 function validatePhoneNumber() {
-  isPhoneNumberValid.value = regexPhoneNumber.test(phoneNumber.value)
+  isPhoneNumberValid = regexPhoneNumber.test(phoneNumber)
 }
 
 function validatePassword() {
-  isPasswordValid.value = regexPassword.test(password.value)
+  isPasswordValid = regexPassword.test(password)
 }
 
 function validatePasswordConfirm() {
-  isPasswordConfirmValid.value = passwordConfirm.value === password.value
+  isPasswordConfirmValid = passwordConfirm === password
 }
 
 // 使用者名稱上限
 function validateUsername() {
-  isUsernameValid.value = name.value.length >= 1 && name.value.length <= 64
+  isUsernameValid = name.length >= 1 && name.length <= 64
 }
 
 // 提交表單
 async function submitRegisterForm() {
   if (
-    isEmailValid.value &&
-    isPhoneNumberValid.value &&
-    isPasswordValid.value &&
-    isPasswordConfirmValid.value &&
+    isEmailValid &&
+    isPhoneNumberValid &&
+    isPasswordValid &&
+    isPasswordConfirmValid &&
     isUsernameValid
   ) {
     await axios({
       method: 'post',
       url: `${API_URL}/register`,
       data: {
-        name: name.value,
-        email: email.value,
-        phoneNumber: phoneNumber.value,
-        password: password.value,
-        sex: sex.value,
+        name: name,
+        email: email,
+        phoneNumber: phoneNumber,
+        password: password,
+        sex: sex,
         birthday: birthday.value
       }
     })
@@ -271,8 +271,8 @@ async function submitRegisterForm() {
         alert(error.response.data)
       })
   } else {
-    if (name.value.length === 0) {
-      isUsernameValid.value = false
+    if (name.length === 0) {
+      isUsernameValid = false
     }
   }
 }
