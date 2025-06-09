@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../components/bugershop/Home-page.vue'
-import Register from '@/components/bugershop/user/Register-page.vue'
-import Forgetpassword from '@/components/bugershop/user/Forget-Password.vue'
-import ResetPasswordForm from '@/components/bugershop/user/Reset-Password.vue'
-import NotFound from '@/components/bugershop/Manager/NotFound.vue'
-import Login from '@/components/bugershop/user/Login-page.vue'
+import Home from '../components/Mikushop/Home-page.vue'
+import Register from '@/components/Mikushop/User/Register-page.vue'
+import Forgetpassword from '@/components/Mikushop/User/Forget-Password.vue'
+import ResetPasswordForm from '@/components/Mikushop/User/Reset-Password.vue'
+import NotFound from '@/components/Mikushop/Website-Manage/NotFound.vue'
+import Login from '@/components/Mikushop/User/Login-page.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

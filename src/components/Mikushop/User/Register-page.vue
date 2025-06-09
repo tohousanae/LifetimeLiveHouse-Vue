@@ -190,8 +190,6 @@
 <script setup>
 import axios from 'axios'
 import { ref } from 'vue'
-import Navbar from '@/components/bugershop/Navbar-page.vue'
-import end from '@/components/bugershop/end-page.vue'
 
 // 表單輸入值
 let email = ref('').value

@@ -60,5 +60,5 @@
 
 <script setup>
 import { RouterLink } from 'vue-router'
-import Login from '@/components/bugershop/user/Login-page.vue'
+import Login from '@/components/Mikushop/User/Login-page.vue'
 </script>
