@@ -82,3 +82,6 @@ https://www.tw-pjsekai.com/news_detail.html?id=6998114598104701697
 
 ## 模板來源
 資展國際
+
+## 未來規劃
+後台功能部分將由MVC改SPA，減少後端渲染對伺服器的負擔
