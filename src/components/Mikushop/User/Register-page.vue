@@ -18,10 +18,10 @@
       <div class="col-12 mb-3">
         <label for="validationEmail" class="form-label">信箱</label>
         <input
-          v-model.trim="email"
+          v-model.trim="inputEmail"
           type="email"
           class="form-control"
-          :class="{ 'is-valid': isEmailValid, 'is-invalid': !isEmailValid && email !== '' }"
+          :class="{ 'is-valid': isEmailValid, 'is-invalid': !isEmailValid && inputEmail !== '' }"
           id="validationEmail"
           placeholder="name@example.com"
           @input="validateEmail"
@@ -35,7 +35,7 @@
       <div class="col-12 mb-3">
         <label for="validationCustomUsername" class="form-label">會員名稱</label>
         <input
-          v-model.trim="name"
+          v-model.trim="inputName"
           type="text"
           class="form-control"
           id="validationCustomUsername"
@@ -43,7 +43,7 @@
           @input="validateUsername"
           :class="{
             'is-valid': isUsernameValid,
-            'is-invalid': !isUsernameValid && name !== ''
+            'is-invalid': !isUsernameValid && inputName !== ''
           }"
           required
         />
@@ -56,12 +56,12 @@
         <label for="validationPhone" class="form-label">手機號碼</label>
         <div class="input-group has-validation">
           <input
-            v-model.trim="phoneNumber"
+            v-model.trim="inputPhoneNumber"
             type="text"
             class="form-control"
             :class="{
               'is-valid': isPhoneNumberValid,
-              'is-invalid': !isPhoneNumberValid && phoneNumber !== ''
+              'is-invalid': !isPhoneNumberValid && inputPhoneNumber !== ''
             }"
             id="validationPhone"
             placeholder="請填寫手機號碼"
@@ -78,7 +78,7 @@
         <label for="validationSMS" class="form-label">簡訊驗證碼</label>
         <div class="input-group has-validation">
           <input
-            v-model.trim="smsCode"
+            v-model.trim="inputSmsCode"
             type="text"
             class="form-control"
             id="validationSMS"
@@ -96,12 +96,12 @@
       <div class="col-12 mb-3">
         <label for="validationPassword" class="form-label">密碼</label>
         <input
-          v-model.trim="password"
+          v-model.trim="inputPassword"
           type="password"
           class="form-control"
           :class="{
             'is-valid': isPasswordValid,
-            'is-invalid': !isPasswordValid && password !== ''
+            'is-invalid': !isPasswordValid && inputPassword !== ''
           }"
           id="validationPassword"
           placeholder="輸入密碼"
@@ -118,12 +118,12 @@
       <div class="col-12 mb-3">
         <label for="validationPasswordConfirm" class="form-label">確認密碼</label>
         <input
-          v-model.trim="passwordConfirm"
+          v-model.trim="inputPasswordConfirm"
           type="password"
           class="form-control"
           :class="{
             'is-valid': isPasswordConfirmValid,
-            'is-invalid': !isPasswordConfirmValid && passwordConfirm !== ''
+            'is-invalid': !isPasswordConfirmValid && inputPasswordConfirm !== ''
           }"
           id="validationPasswordConfirm"
           placeholder="確認密碼"
@@ -137,7 +137,7 @@
       <!-- 性別 -->
       <div class="col-12 mb-3">
         <label for="validationSex" class="form-label">性別</label>
-        <select v-model.trim="sex" class="form-select" id="validationSex" required>
+        <select v-model.trim="inputSex" class="form-select" id="validationSex" required>
           <option selected disabled value="">請選擇...</option>
           <option>男</option>
           <option>女</option>
@@ -151,7 +151,7 @@
       <div class="col-12 mb-3">
         <label for="validationBirthday" class="form-label">生日</label>
         <input
-          v-model.trim="birthday"
+          v-model.trim="inputBirthday"
           type="datetime-local"
           class="form-control"
           id="validationBirthday"
@@ -192,21 +192,14 @@ import axios from 'axios'
 import { ref } from 'vue'
 
 // 表單輸入值
-let email = ref('').value
-let name = ref('').value
-let password = ref('').value
-let passwordConfirm = ref('').value
-let phoneNumber = ref('').value
-let sex = ref('').value
-let birthday = ref(new Date()).value
-let smsCode = ref('').value
-
-// 驗證狀態
-let isEmailValid = ref(false).value
-let isPhoneNumberValid = ref(false).value
-let isPasswordValid = ref(false).value
-let isPasswordConfirmValid = ref(false).value
-let isUsernameValid = ref(false).value
+let inputEmail = ref('').value
+let inputName = ref('').value
+let inputPassword = ref('').value
+let inputPasswordConfirm = ref('').value
+let inputPhoneNumber = ref('').value
+let inputSex = ref('').value
+let inputBirthday = ref(new Date()).value
+let inputSmsCode = ref('').value
 
 // 使用 import.meta.env.VITE_API_SPOTURL 環境變數來獲取 API 的基本 URL
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
@@ -215,28 +208,6 @@ const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 const regexPhoneNumber = /^09\d{8}$/
-
-// 輸入時即時更新驗證狀態
-function validateEmail() {
-  isEmailValid = regexEmail.test(email)
-}
-
-function validatePhoneNumber() {
-  isPhoneNumberValid = regexPhoneNumber.test(phoneNumber)
-}
-
-function validatePassword() {
-  isPasswordValid = regexPassword.test(password)
-}
-
-function validatePasswordConfirm() {
-  isPasswordConfirmValid = passwordConfirm === password
-}
-
-// 使用者名稱上限
-function validateUsername() {
-  isUsernameValid = name.length >= 1 && name.length <= 64
-}
 
 // 提交表單
 async function submitRegisterForm() {
@@ -251,12 +222,12 @@ async function submitRegisterForm() {
       method: 'post',
       url: `${API_URL}/register`,
       data: {
-        name: name,
-        email: email,
-        phoneNumber: phoneNumber,
-        password: password,
-        sex: sex,
-        birthday: birthday.value
+        name: inputName,
+        email: inputEmail,
+        phoneNumber: inputPhoneNumber,
+        password: inputPassword,
+        sex: inputSex,
+        birthday: inputBirthday
       }
     })
       .then(function (response) {
@@ -269,7 +240,7 @@ async function submitRegisterForm() {
         alert(error.response.data)
       })
   } else {
-    if (name.length === 0) {
+    if (inputName.length === 0) {
       isUsernameValid = false
     }
   }

@@ -3,7 +3,7 @@ import Home from '../components/Mikushop/Home-page.vue'
 import Register from '@/components/Mikushop/User/Register-page.vue'
 import Forgetpassword from '@/components/Mikushop/User/Forget-Password.vue'
 import ResetPasswordForm from '@/components/Mikushop/User/Reset-Password.vue'
-import NotFound from '@/components/Mikushop/Website-Manage/NotFound.vue'
+import NotFound from '@/components/Mikushop/Others/NotFound.vue'
 import Login from '@/components/Mikushop/User/Login-page.vue'
 
 const router = createRouter({

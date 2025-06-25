@@ -1,7 +1,7 @@
 <!--npm套件更新方法：https://jimhuang.dev/npm/version/ -->
 
 <template>
-  
+  <NavbarPage></NavbarPage>
   <!-- carousel start -->
   <div id="carouselExampleIndicators" class="carousel slide mb-5" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -187,12 +187,13 @@
       </div>
     </div>
   </div>
+  <EndPage></EndPage>
   <!-- content end -->
 </template>
 
 <script setup>
-
-
+import EndPage from './end-page.vue';
+import NavbarPage from './Navbar-page.vue';
 </script>
 
 <style scoped></style>
