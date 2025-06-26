@@ -211,38 +211,26 @@ const regexPhoneNumber = /^09\d{8}$/
 
 // 提交表單
 async function submitRegisterForm() {
-  if (
-    isEmailValid &&
-    isPhoneNumberValid &&
-    isPasswordValid &&
-    isPasswordConfirmValid &&
-    isUsernameValid
-  ) {
-    await axios({
-      method: 'post',
-      url: `${API_URL}/register`,
-      data: {
-        name: inputName,
-        email: inputEmail,
-        phoneNumber: inputPhoneNumber,
-        password: inputPassword,
-        sex: inputSex,
-        birthday: inputBirthday
-      }
-    })
-      .then(function (response) {
-        console.log(response)
-        alert(response.data)
-        window.location.href = '/'
-      })
-      .catch(function (error) {
-        console.log(error)
-        alert(error.response.data)
-      })
-  } else {
-    if (inputName.length === 0) {
-      isUsernameValid = false
+  await axios({
+    method: 'post',
+    url: `${API_URL}/register`,
+    data: {
+      name: inputName,
+      email: inputEmail,
+      phoneNumber: inputPhoneNumber,
+      password: inputPassword,
+      sex: inputSex,
+      birthday: inputBirthday
     }
-  }
+  })
+    .then(function (response) {
+      console.log(response)
+      alert(response.data)
+      window.location.href = '/'
+    })
+    .catch(function (error) {
+      console.log(error)
+      alert(error.response.data)
+    })
 }
 </script>
