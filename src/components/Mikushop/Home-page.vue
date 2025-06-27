@@ -194,6 +194,9 @@
 <script setup>
 import EndPage from './end-page.vue';
 import NavbarPage from './Navbar-page.vue';
+import { v4 as uuidv4 } from 'uuid';
+console.log(uuidv4()); // ⇨ 'cb729eee-87de-4aa8-b455-857bfff869e2'
+
 </script>
 
 <style scoped></style>
