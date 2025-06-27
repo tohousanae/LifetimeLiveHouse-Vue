@@ -8,7 +8,6 @@
                         <use xlink:href="#bootstrap"></use>
                     </svg>
                 </a>
-                <span class="text-muted">網頁僅供資展國際上課使用，不為商業用途。 </span>
             </div>
 
             <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
@@ -16,6 +15,7 @@
                 <li class="ms-3"><a class="text-muted" href="#"><i class="bi bi-instagram fs-3"></i></a></li>
                 <li class="ms-3"><a class="text-muted" href="#"><i class="bi bi-youtube fs-3"></i></a></li>
             </ul>
+            <span class="text-muted">網頁僅供資展國際上課使用，不為商業用途。 </span>
         </footer>
     </div>
 
