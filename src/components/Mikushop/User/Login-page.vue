@@ -85,6 +85,7 @@ async function submitForm() {
   // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
   // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
   // ajax請求使用非同步方式，可以避免網頁在請求過程中無法操作的情況
+  // 登入後若身分為員工則直接跳轉到後台頁面，否則跳轉到前台頁面
   await axios({
     method: 'post',
     url: `${API_URL}/login`,
