@@ -201,11 +201,6 @@ let inputSmsCode = ref('').value
 // 使用 import.meta.env.VITE_API_SPOTURL 環境變數來獲取 API 的基本 URL
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
-// 驗證規則
-const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
-const regexPhoneNumber = /^09\d{8}$/
-
 // 提交表單
 async function submitRegisterForm() {
   await axios({
