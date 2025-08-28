@@ -67,7 +67,7 @@ async function sendForgetPasswordForm() {
         url: `${import.meta.env.VITE_API_SPOTURL}/Mail/send`,
         data: {
           toEmail: email,
-          subject: `凌晨3點漢堡店-重設密碼通知信`,
+          subject: `重設密碼通知信`,
           body: ` <!DOCTYPE html>
                   <html lang="en">
                   <head>
