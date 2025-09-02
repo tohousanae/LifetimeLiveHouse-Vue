@@ -3,8 +3,7 @@ import '../node_modules/bootstrap/dist/js/bootstrap.min.js'
 </script>
 
 <template>
-  <header></header>
-
+  
   <!--router頁面顯示區域-->
   <RouterView>
   </RouterView>
@@ -19,6 +18,6 @@ import '../node_modules/bootstrap/dist/js/bootstrap.min.js'
 </style>
 <style lang="scss">
 // 引入Boostrap自訂義css與boostrap icons
-@use '../scss/custom.scss';
+@use '../scss/bootstrap.scss';
 @import '../node_modules/bootstrap-icons/font/bootstrap-icons.min.css';
 </style>
