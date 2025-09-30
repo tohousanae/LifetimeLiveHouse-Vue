@@ -81,6 +81,12 @@ https://www.tw-pjsekai.com/news_detail.html?id=6998114598104701697
 1. https://pjsekai.fandom.com/zh-tw/wiki/%E5%88%9D%E9%9F%B3%E6%9C%AA%E4%BE%86
 2. https://learn.microsoft.com/zh-tw/aspnet/identity/overview/features-api/two-factor-authentication-using-sms-and-email-with-aspnet-identity
 3. 資料庫系統 PROJECT 2-歡樂送線上訂餐系統 https://www.mis.nsysu.edu.tw/db-book/DBProject2009Fall/db_98_03/report.ppt
+4. 使用 Vue3 與 Tiptap 打造文字編輯器 https://eva813.github.io/2024/07/19/vue-tiptap/#:~:text=%E6%9C%AC%E6%96%87%E5%B0%87%E4%BB%8B%E7%B4%B9%E5%A6%82%E4%BD%95%E5%9C%A8%20Vue3%20%E4%B8%AD%E4%BD%BF%E7%94%A8%20Tiptap%EF%BC%8C%E4%B8%A6%E7%B5%90%E5%90%88%20Vuetify%20%E5%AF%A6%E7%8F%BE%E6%96%87%E5%AD%97%E7%B7%A8%E8%BC%AF%E5%99%A8%E3%80%82%20%E6%A0%B9%E6%93%9A%E5%B0%8D%E6%87%89%20EXTENSIONS,italic%20%E4%BB%A5%E6%AD%A4%E9%A1%9E%E6%8E%A8%E2%80%A6%20%E6%A0%B9%E6%93%9A%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E5%8A%9F%E8%83%BD%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%8A%A0%E5%85%A5%20%E4%BB%A5%20vue3%20%E7%82%BA%E7%AF%84%E4%BE%8B%20%2B%20vuetify
+5. 中山大學資工系 歡樂送線上訂餐系統：https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.mis.nsysu.edu.tw%2Fdb-book%2FDBProject2009Fall%2Fdb_98_03%2Freport.ppt&wdOrigin=BROWSELINK
+6. 初音ミク公式ナビ「ミクナビ」 https://mikunavi.com/\
+7. 蝦皮購物 https://shopee.tw/
+8. 必勝客 https://www.pizzahut.com.tw/
+9. 台大活動報名系統 https://www.cc.ntu.edu.tw/chinese/epaper/0011/20091220_1103.htm
 
 ## 模板來源
 資展國際
