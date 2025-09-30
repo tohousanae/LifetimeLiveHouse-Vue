@@ -88,6 +88,6 @@ https://www.tw-pjsekai.com/news_detail.html?id=6998114598104701697
 ## 未來規劃
 1. 完成所有功能與後端串接
 2. Pinia狀態管理
-3. 提升安全性並減少bug
+3. 提升安全性並減少bug、效能優化
 4. Visio繪製流程圖
 
