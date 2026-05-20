@@ -18,6 +18,7 @@
     "axios": "^1.9.0",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
+    "mkcert": "^3.2.0",
     "pinia": "^3.0.3",
     "uuid": "^11.1.0",
     "vee-validate": "^4.15.1",
@@ -38,6 +39,7 @@
     "prettier": "^3.5.3",
     "sass": "^1.89.1",
     "sass-loader": "^16.0.5",
+    "vite-plugin-mkcert": "^2.0.0",
     "vite-plugin-vue-devtools": "^7.7.6",
     "vitest": "^3.2.2"
   }
