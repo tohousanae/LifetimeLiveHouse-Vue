@@ -7,7 +7,10 @@ import viteBasicSslPlugin from "@vitejs/plugin-basic-ssl";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  server: { https: true },
+  server: { 
+    host: true,
+    https: true 
+  },
   plugins: [vue(), vueDevTools(),viteBasicSslPlugin()],
   resolve: {
     alias: {
