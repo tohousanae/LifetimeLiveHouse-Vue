@@ -20,6 +20,7 @@
     "uuid": "^11.1.0",
     "vite-plugin-mkcert": "^2.0.0",
     "vue": "^3.5.16",
+    "vue-i18n": "^11.4.4",
     "vue-loading-overlay": "6.0",
     "vue-router": "^4.5.1"
   },
