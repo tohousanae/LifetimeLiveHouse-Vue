@@ -6,8 +6,8 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  server: 
-  { https: true ,
+  server: { 
+    https: false, // 將這裡改為 false，或者直接整行刪除
     host: true
   },
   plugins: [vue(), vueDevTools()],
