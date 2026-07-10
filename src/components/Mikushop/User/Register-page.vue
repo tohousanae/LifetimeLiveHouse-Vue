@@ -65,7 +65,7 @@
         </div>
       </div>
 
-      <div class="col-md-8 mb-3 text-start">
+      <div class="col-12 mb-3 text-start">
         <label for="validationSMS" class="form-label">簡訊驗證碼</label>
         <div class="input-group has-validation">
           <input
@@ -170,12 +170,13 @@
 </template>
 
 <style scoped>
-/* 置於畫面正中央 */
+/* 置於畫面正中央，並相容手機版長度 */
 .form-center {
-  height: 100vh;
+  min-height: 100vh; /* 關鍵修改：改用 min-height，確保內容過長時可以往下延伸撐開 */
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 2rem 15px; /* 增加上下 padding (2rem)，讓表單在手機版滑到頂或底時不會貼死螢幕邊緣 */
 }
 
 /* 自定義成功提示文字顏色 */
