@@ -45,7 +45,7 @@
         <div class="invalid-feedback">會員名稱不能為空，至少1字元，最多64字元</div>
       </div>
 
-      <div class="col-md-12 mb-3 text-start">
+      <!-- <div class="col-md-12 mb-3 text-start">
         <label for="validationPhone" class="form-label">手機號碼</label>
         <div class="input-group has-validation">
           <input
@@ -63,9 +63,9 @@
           <div class="valid-feedback">Looks good!</div>
           <div class="invalid-feedback">手機不能為空，且必須為09開頭的10位數字</div>
         </div>
-      </div>
+      </div> -->
 
-      <div class="col-12 mb-3 text-start">
+      <!-- <div class="col-12 mb-3 text-start">
         <label for="validationSMS" class="form-label">簡訊驗證碼</label>
         <div class="input-group has-validation">
           <input
@@ -84,7 +84,7 @@
           <div class="valid-feedback">Looks good!</div>
           <div class="invalid-feedback">請輸入簡訊驗證碼</div>
         </div>
-      </div>
+      </div> -->
 
       <div class="col-12 mb-3 text-start">
         <label for="validationPassword" class="form-label">密碼</label>
@@ -194,10 +194,10 @@ const inputEmail = ref('')
 const inputName = ref('')
 const inputPassword = ref('')
 const inputPasswordConfirm = ref('')
-const inputPhoneNumber = ref('')
+// const inputPhoneNumber = ref('')
 const inputSex = ref('')
 const inputBirthday = ref('')
-const inputSmsCode = ref('')
+// const inputSmsCode = ref('')
 
 // 新增：追蹤使用者是否已經按過「送出」按鈕
 const hasSubmitted = ref(false)
@@ -211,7 +211,7 @@ const regexPhoneNumber = /^09\d{8}$/
 const isEmailValid = computed(() => inputEmail.value !== '' && regexEmail.test(inputEmail.value))
 const isUsernameValid = computed(() => inputName.value.length >= 1 && inputName.value.length <= 64)
 const isPhoneNumberValid = computed(() => inputPhoneNumber.value !== '' && regexPhoneNumber.test(inputPhoneNumber.value))
-const isSmsCodeValid = computed(() => inputSmsCode.value !== '')
+// const isSmsCodeValid = computed(() => inputSmsCode.value !== '')
 const isPasswordValid = computed(() => inputPassword.value !== '' && regexPassword.test(inputPassword.value))
 const isPasswordConfirmValid = computed(() => inputPasswordConfirm.value !== '' && inputPasswordConfirm.value === inputPassword.value)
 const isSexValid = computed(() => inputSex.value !== '')
@@ -221,15 +221,15 @@ const isBirthdayValid = computed(() => inputBirthday.value !== '')
 const isFormValid = computed(() => {
   return isEmailValid.value &&
          isUsernameValid.value &&
-         isPhoneNumberValid.value &&
-         isSmsCodeValid.value &&
+        //  isPhoneNumberValid.value &&
+        //  isSmsCodeValid.value &&
          isPasswordValid.value &&
          isPasswordConfirmValid.value &&
          isSexValid.value &&
          isBirthdayValid.value
 })
 
-const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
+const API_URL = `${import.meta.env.VITE_API_SPOTURL}/Register`
 
 // 提交表單
 async function submitRegisterForm() {
@@ -243,7 +243,7 @@ async function submitRegisterForm() {
 
   await axios({
     method: 'post',
-    url: `${API_URL}/register`,
+    url: `${API_URL}/postRegisterMember`,
     data: {
       name: inputName.value,          // 讀取響應式資料必須加上 .value
       email: inputEmail.value,
