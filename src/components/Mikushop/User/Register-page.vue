@@ -247,7 +247,6 @@ async function submitRegisterForm() {
     data: {
       name: inputName.value,          // 讀取響應式資料必須加上 .value
       email: inputEmail.value,
-      phoneNumber: inputPhoneNumber.value,
       password: inputPassword.value,
       sex: inputSex.value,
       birthday: inputBirthday.value
