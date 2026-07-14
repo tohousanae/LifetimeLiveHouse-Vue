@@ -9,6 +9,7 @@
         <h2>會員註冊</h2>
       </div>
 
+      <!-- 信箱 -->
       <div class="col-12 mb-3 text-start">
         <label for="validationEmail" class="form-label">信箱</label>
         <input
@@ -27,6 +28,7 @@
         <div class="invalid-feedback">信箱不能為空，且格式必須正確</div>
       </div>
 
+      <!-- 會員名稱 -->
       <div class="col-12 mb-3 text-start">
         <label for="validationCustomUsername" class="form-label">會員名稱</label>
         <input
@@ -45,47 +47,7 @@
         <div class="invalid-feedback">會員名稱不能為空，至少1字元，最多64字元</div>
       </div>
 
-      <!-- <div class="col-md-12 mb-3 text-start">
-        <label for="validationPhone" class="form-label">手機號碼</label>
-        <div class="input-group has-validation">
-          <input
-            v-model.trim="inputPhoneNumber"
-            type="text"
-            class="form-control"
-            :class="{
-              'is-valid': hasSubmitted && isPhoneNumberValid,
-              'is-invalid': hasSubmitted && !isPhoneNumberValid
-            }"
-            id="validationPhone"
-            placeholder="請填寫手機號碼"
-            required
-          />
-          <div class="valid-feedback">Looks good!</div>
-          <div class="invalid-feedback">手機不能為空，且必須為09開頭的10位數字</div>
-        </div>
-      </div> -->
-
-      <!-- <div class="col-12 mb-3 text-start">
-        <label for="validationSMS" class="form-label">簡訊驗證碼</label>
-        <div class="input-group has-validation">
-          <input
-            v-model.trim="inputSmsCode"
-            type="text"
-            class="form-control"
-            :class="{
-              'is-valid': hasSubmitted && isSmsCodeValid,
-              'is-invalid': hasSubmitted && !isSmsCodeValid
-            }"
-            id="validationSMS"
-            placeholder="輸入簡訊驗證碼"
-            required
-          />
-          <button type="button" class="btn btn-primary">獲取簡訊驗證碼</button>
-          <div class="valid-feedback">Looks good!</div>
-          <div class="invalid-feedback">請輸入簡訊驗證碼</div>
-        </div>
-      </div> -->
-
+      <!-- 密碼 -->
       <div class="col-12 mb-3 text-start">
         <label for="validationPassword" class="form-label">密碼</label>
         <input
@@ -106,6 +68,7 @@
         </div>
       </div>
 
+      <!-- 確認密碼 -->
       <div class="col-12 mb-3 text-start">
         <label for="validationPasswordConfirm" class="form-label">確認密碼</label>
         <input
@@ -124,6 +87,7 @@
         <div class="invalid-feedback">確認密碼不能為空，且必須與密碼一致</div>
       </div>
 
+      <!-- 性別 -->
       <div class="col-12 mb-3 text-start">
         <label for="validationSex" class="form-label">性別</label>
         <select 
@@ -145,6 +109,7 @@
         <div class="invalid-feedback">請選擇性別</div>
       </div>
 
+      <!-- 生日 -->
       <div class="col-12 mb-3 text-start">
         <label for="validationBirthday" class="form-label">生日</label>
         <input
@@ -162,6 +127,14 @@
         <div class="invalid-feedback">請選擇生日</div>
       </div>
 
+      <!-- 🌟 新增：顯示後端 API 錯誤訊息的區塊 -->
+      <div v-if="errorMessage" class="col-12 mb-3 text-start">
+        <div class="alert alert-danger" role="alert" style="white-space: pre-wrap; word-break: break-all;">
+          {{ errorMessage }}
+        </div>
+      </div>
+
+      <!-- 送出按鈕 -->
       <div class="col-12 mb-3 text-start">
         <button class="btn btn-primary" type="submit">送出</button>
       </div>
@@ -170,16 +143,13 @@
 </template>
 
 <style scoped>
-/* 置於畫面正中央，並相容手機版長度 */
 .form-center {
-  min-height: 100vh; /* 關鍵修改：改用 min-height，確保內容過長時可以往下延伸撐開 */
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem 15px; /* 增加上下 padding (2rem)，讓表單在手機版滑到頂或底時不會貼死螢幕邊緣 */
+  padding: 2rem 15px;
 }
-
-/* 自定義成功提示文字顏色 */
 .valid-feedback {
   color: #008d00;
 }
@@ -189,29 +159,24 @@
 import axios from 'axios'
 import { ref, computed } from 'vue'
 
-// 修正：必須保留 ref() 物件，不要在宣告時加上 .value
 const inputEmail = ref('')
 const inputName = ref('')
 const inputPassword = ref('')
 const inputPasswordConfirm = ref('')
-// const inputPhoneNumber = ref('')
 const inputSex = ref('')
 const inputBirthday = ref('')
-// const inputSmsCode = ref('')
 
-// 新增：追蹤使用者是否已經按過「送出」按鈕
+// 狀態控制
 const hasSubmitted = ref(false)
+const errorMessage = ref('') // 🌟 新增：用來存放後端回傳的錯誤文字
 
 // 驗證規則
 const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
-const regexPhoneNumber = /^09\d{8}$/
 
-// 結合 Vue 的 computed 即時計算各欄位是否有效（包含防呆空值檢驗）
+// 即時計算各欄位是否有效
 const isEmailValid = computed(() => inputEmail.value !== '' && regexEmail.test(inputEmail.value))
 const isUsernameValid = computed(() => inputName.value.length >= 1 && inputName.value.length <= 64)
-const isPhoneNumberValid = computed(() => inputPhoneNumber.value !== '' && regexPhoneNumber.test(inputPhoneNumber.value))
-// const isSmsCodeValid = computed(() => inputSmsCode.value !== '')
 const isPasswordValid = computed(() => inputPassword.value !== '' && regexPassword.test(inputPassword.value))
 const isPasswordConfirmValid = computed(() => inputPasswordConfirm.value !== '' && inputPasswordConfirm.value === inputPassword.value)
 const isSexValid = computed(() => inputSex.value !== '')
@@ -221,8 +186,6 @@ const isBirthdayValid = computed(() => inputBirthday.value !== '')
 const isFormValid = computed(() => {
   return isEmailValid.value &&
          isUsernameValid.value &&
-        //  isPhoneNumberValid.value &&
-        //  isSmsCodeValid.value &&
          isPasswordValid.value &&
          isPasswordConfirmValid.value &&
          isSexValid.value &&
@@ -233,33 +196,48 @@ const API_URL = `${import.meta.env.VITE_API_SPOTURL}/Register`
 
 // 提交表單
 async function submitRegisterForm() {
-  hasSubmitted.value = true // 按下送出時，觸發 UI 顯示紅字/綠字驗證結果
+  hasSubmitted.value = true 
+  errorMessage.value = '' // 🌟 每次按下送出前，清空前一次的錯誤訊息
 
   // 如果表單驗證不通過，阻擋 API 請求
   if (!isFormValid.value) {
-    console.log('表單驗證失敗，請檢查紅字欄位')
+    console.log('表單前端驗證失敗，請檢查紅字欄位')
     return
   }
 
-  await axios({
-    method: 'post',
-    url: `${API_URL}/postRegisterMember`,
-    data: {
-      name: inputName.value,          // 讀取響應式資料必須加上 .value
-      email: inputEmail.value,
-      password: inputPassword.value,
-      sex: inputSex.value,
-      birthday: inputBirthday.value
+  try {
+    // 🌟 改用 async/await，搭配 try-catch 處理錯誤
+    const response = await axios({
+      method: 'post',
+      url: `${API_URL}/postRegisterMember`,
+      data: {
+        name: inputName.value,
+        email: inputEmail.value,
+        password: inputPassword.value,
+        sex: inputSex.value,
+        birthday: inputBirthday.value
+      }
+    })
+
+    // 執行到這代表 HTTP 狀態碼為 2xx (成功)
+    console.log(response)
+    alert('註冊成功！請至信箱收取驗證信。')
+    
+    // 只有成功才會跳轉回首頁
+    window.location.href = '/'
+
+  } catch (error) {
+    // 執行到這代表 HTTP 狀態碼為 4xx 或 5xx (失敗)
+    console.error('API 錯誤:', error)
+    
+    // 嘗試取得後端的詳細錯誤字串 (例如 ex.ToString() 或 "信箱已被註冊")
+    if (error.response && error.response.data) {
+      errorMessage.value = error.response.data
+    } else {
+      errorMessage.value = '發生未知錯誤，請確認網路連線或稍後再試。'
     }
-  })
-    .then(function (response) {
-      console.log(response)
-      alert(response.data)
-      window.location.href = '/'
-    })
-    .catch(function (error) {
-      console.log(error)
-      alert(error.response?.data || '發生錯誤')
-    })
+    
+    // 🌟 這裡沒有寫 window.location.href，所以出錯絕對不會跳回首頁！
+  }
 }
 </script>
