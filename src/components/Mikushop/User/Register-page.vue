@@ -47,44 +47,62 @@
         <div class="invalid-feedback">會員名稱不能為空，至少1字元，最多64字元</div>
       </div>
 
-      <!-- 密碼 -->
+      <!-- 密碼 (加入 input-group 與眼睛按鈕) -->
       <div class="col-12 mb-3 text-start">
         <label for="validationPassword" class="form-label">密碼</label>
-        <input
-          v-model.trim="inputPassword"
-          type="password"
-          class="form-control"
-          :class="{
-            'is-valid': hasSubmitted && isPasswordValid,
-            'is-invalid': hasSubmitted && !isPasswordValid
-          }"
-          id="validationPassword"
-          placeholder="輸入密碼"
-          required
-        />
-        <div class="valid-feedback">Looks good!</div>
-        <div class="invalid-feedback">
-          密碼不能為空，必須包含至少1個數字、1個大寫字母、1個小寫字母和1個特殊字元，且不含空格
+        <div class="input-group has-validation">
+          <input
+            v-model.trim="inputPassword"
+            :type="showPassword ? 'text' : 'password'"
+            class="form-control hide-validation-icon"
+            :class="{
+              'is-valid': hasSubmitted && isPasswordValid,
+              'is-invalid': hasSubmitted && !isPasswordValid
+            }"
+            id="validationPassword"
+            placeholder="輸入密碼"
+            required
+          />
+          <button 
+            class="btn btn-outline-secondary" 
+            type="button" 
+            @click="showPassword = !showPassword"
+          >
+            {{ showPassword ? '🙈' : '👁️' }}
+          </button>
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">
+            密碼不能為空，必須包含至少1個數字、1個大寫字母、1個小寫字母和1個特殊字元，且不含空格
+          </div>
         </div>
       </div>
 
-      <!-- 確認密碼 -->
+      <!-- 確認密碼 (加入 input-group 與眼睛按鈕) -->
       <div class="col-12 mb-3 text-start">
         <label for="validationPasswordConfirm" class="form-label">確認密碼</label>
-        <input
-          v-model.trim="inputPasswordConfirm"
-          type="password"
-          class="form-control"
-          :class="{
-            'is-valid': hasSubmitted && isPasswordConfirmValid,
-            'is-invalid': hasSubmitted && !isPasswordConfirmValid
-          }"
-          id="validationPasswordConfirm"
-          placeholder="確認密碼"
-          required
-        />
-        <div class="valid-feedback">Looks good!</div>
-        <div class="invalid-feedback">確認密碼不能為空，且必須與密碼一致</div>
+        <div class="input-group has-validation">
+          <input
+            v-model.trim="inputPasswordConfirm"
+            :type="showPasswordConfirm ? 'text' : 'password'"
+            class="form-control hide-validation-icon"
+            :class="{
+              'is-valid': hasSubmitted && isPasswordConfirmValid,
+              'is-invalid': hasSubmitted && !isPasswordConfirmValid
+            }"
+            id="validationPasswordConfirm"
+            placeholder="確認密碼"
+            required
+          />
+          <button 
+            class="btn btn-outline-secondary" 
+            type="button" 
+            @click="showPasswordConfirm = !showPasswordConfirm"
+          >
+            {{ showPasswordConfirm ? '🙈' : '👁️' }}
+          </button>
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">確認密碼不能為空，且必須與密碼一致</div>
+        </div>
       </div>
 
       <!-- 性別 -->
@@ -127,7 +145,7 @@
         <div class="invalid-feedback">請選擇生日</div>
       </div>
 
-      <!-- 🌟 新增：顯示後端 API 錯誤訊息的區塊 -->
+      <!-- 錯誤訊息區塊 -->
       <div v-if="errorMessage" class="col-12 mb-3 text-start">
         <div class="alert alert-danger" role="alert" style="white-space: pre-wrap; word-break: break-all;">
           {{ errorMessage }}
@@ -153,6 +171,12 @@
 .valid-feedback {
   color: #008d00;
 }
+
+/* 🌟 核心修正：移除 input-group 中 input 預設的紅綠圖示，避免遮擋按鈕 */
+.hide-validation-icon.is-valid,
+.hide-validation-icon.is-invalid {
+  background-image: none !important;
+}
 </style>
 
 <script setup>
@@ -166,9 +190,13 @@ const inputPasswordConfirm = ref('')
 const inputSex = ref('')
 const inputBirthday = ref('')
 
+// 🌟 新增密碼顯示狀態
+const showPassword = ref(false)
+const showPasswordConfirm = ref(false)
+
 // 狀態控制
 const hasSubmitted = ref(false)
-const errorMessage = ref('') // 🌟 新增：用來存放後端回傳的錯誤文字
+const errorMessage = ref('') 
 
 // 驗證規則
 const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -197,16 +225,14 @@ const API_URL = `${import.meta.env.VITE_API_SPOTURL}/Register`
 // 提交表單
 async function submitRegisterForm() {
   hasSubmitted.value = true 
-  errorMessage.value = '' // 🌟 每次按下送出前，清空前一次的錯誤訊息
+  errorMessage.value = '' 
 
-  // 如果表單驗證不通過，阻擋 API 請求
   if (!isFormValid.value) {
     console.log('表單前端驗證失敗，請檢查紅字欄位')
     return
   }
 
   try {
-    // 🌟 改用 async/await，搭配 try-catch 處理錯誤
     const response = await axios({
       method: 'post',
       url: `${API_URL}/postRegisterMember`,
@@ -219,25 +245,17 @@ async function submitRegisterForm() {
       }
     })
 
-    // 執行到這代表 HTTP 狀態碼為 2xx (成功)
     console.log(response)
     alert('註冊成功！請至信箱收取驗證信。')
-    
-    // 只有成功才會跳轉回首頁
     window.location.href = '/'
 
   } catch (error) {
-    // 執行到這代表 HTTP 狀態碼為 4xx 或 5xx (失敗)
     console.error('API 錯誤:', error)
-    
-    // 嘗試取得後端的詳細錯誤字串 (例如 ex.ToString() 或 "信箱已被註冊")
     if (error.response && error.response.data) {
       errorMessage.value = error.response.data
     } else {
       errorMessage.value = '發生未知錯誤，請確認網路連線或稍後再試。'
     }
-    
-    // 🌟 這裡沒有寫 window.location.href，所以出錯絕對不會跳回首頁！
   }
 }
 </script>
