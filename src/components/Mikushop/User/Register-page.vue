@@ -157,6 +157,23 @@
         <button class="btn btn-primary" type="submit">送出</button>
       </div>
     </form>
+    <!-- 新增：註冊成功的 Modal -->
+<div class="modal fade" ref="successModalRef" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">註冊成功</h5>
+      </div>
+      <div class="modal-body text-center">
+        <p>註冊成功！請至信箱收取驗證信。</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <!-- 點擊確認後才執行跳轉 -->
+        <button type="button" class="btn btn-primary" @click="goToHome">確認並回首頁</button>
+      </div>
+    </div>
+  </div>
+</div>
   </div>
 </template>
 
@@ -181,8 +198,31 @@
 
 <script setup>
 import axios from 'axios'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
+// ⚠️ 必須引入 Bootstrap 的 JS，才能使用 new bootstrap.Modal
+import * as bootstrap from 'bootstrap'
+
+// 建立 Modal 的 DOM 參考與實體變數
+const successModalRef = ref(null)
+let successModal = null
+
+// 在組件掛載時，初始化 Modal 實體
+onMounted(() => {
+  if (successModalRef.value) {
+    successModal = new bootstrap.Modal(successModalRef.value)
+  }
+})
+
+// 🌟 定義跳轉首頁的方法（請在 Template 的 Modal 確認按鈕加上 @click="goToHome"）
+function goToHome() {
+  if (successModal) {
+    successModal.hide() // 先隱藏 Modal
+  }
+  window.location.href = '/' // 再執行跳轉
+}
+
+// 表單輸入變數
 const inputEmail = ref('')
 const inputName = ref('')
 const inputPassword = ref('')
@@ -190,7 +230,7 @@ const inputPasswordConfirm = ref('')
 const inputSex = ref('')
 const inputBirthday = ref('')
 
-// 🌟 新增密碼顯示狀態
+// 新增密碼顯示狀態
 const showPassword = ref(false)
 const showPasswordConfirm = ref(false)
 
@@ -246,8 +286,13 @@ async function submitRegisterForm() {
     })
 
     console.log(response)
-    alert('註冊成功！請至信箱收取驗證信。')
-    window.location.href = '/'
+    
+    // 顯示註冊成功的 Modal
+    if (successModal) {
+      successModal.show()
+    }
+    
+    // 🛑 這裡已移除 window.location.href = '/'，交由 goToHome 函式處理
 
   } catch (error) {
     console.error('API 錯誤:', error)
