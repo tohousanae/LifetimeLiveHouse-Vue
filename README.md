@@ -73,12 +73,12 @@ npm run lint
 麥當勞歡樂送、麥當勞app、麥當勞點點卡、SEGA Diva F系列
 
 ## 重要聲明
-本專案內容為程式交流學習之用，不作為商業用途，，所有素材來源版權歸版權擁有者所有。
+本專案內容為程式交流學習之用，不作為商業用途，引用之第三方素材為版權擁有者所有。
 
 ## 世界計畫二次創作、Piapro角色創作規範
 https://www.tw-pjsekai.com/news_detail.html?id=6998114598104701697
 
-## 參考引用資料
+## 引用資料
 1. https://pjsekai.fandom.com/zh-tw/wiki/%E5%88%9D%E9%9F%B3%E6%9C%AA%E4%BE%86
 2. https://learn.microsoft.com/zh-tw/aspnet/identity/overview/features-api/two-factor-authentication-using-sms-and-email-with-aspnet-identity
 3. 資料庫系統 PROJECT 2-歡樂送線上訂餐系統 https://www.mis.nsysu.edu.tw/db-book/DBProject2009Fall/db_98_03/report.ppt
