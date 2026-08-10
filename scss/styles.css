@@ -1,0 +1,40 @@
+body {
+  font-size: 30px;
+}
+
+nav {
+  width: 50%;
+}
+nav ul {
+  font-size: 2rem;
+}
+nav ul li {
+  border-bottom: 1px solid #e0540e;
+}
+nav ul li a {
+  color: #e0540e;
+}
+nav ul li a:hover {
+  color: #1cb6e9;
+}
+
+.bg-primary {
+  background: #e0540e;
+}
+
+.button {
+  border-radius: 50px;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.img-rounded {
+  border-radius: 50px;
+}
+
+.button, .card {
+  padding: 10px;
+  border: 1px solid #1c1c1c;
+}/*# sourceMappingURL=styles.css.map */
