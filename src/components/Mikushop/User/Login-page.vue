@@ -72,26 +72,23 @@
 import axios from 'axios'
 import { ref } from 'vue'
 
+// 💡 這裡維持原樣！Vite 在 Cloudflare 編譯時會自動替換
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
-// 定義表單資料變數
-let email = ref('').value
-let password = ref('').value
-
-// 正則表達式
-// let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+// 🐛 修正一：移除 .value，保留 ref() 物件以維持雙向綁定
+const email = ref('')
+const password = ref('')
 
 async function submitForm() {
-  // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
-  // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
   // ajax請求使用非同步方式，可以避免網頁在請求過程中無法操作的情況
   await axios({
     method: 'post',
     url: `${API_URL}/login`,
-    withCredentials: true, //ajax請求有用到cookie時都要設定withCredentials: true
+    withCredentials: true,
     data: {
-      email: email,
-      password: password
+      // 🐛 修正二：在 script 區塊內取用 ref 的資料，必須加上 .value
+      email: email.value,
+      password: password.value
     }
   })
     .then(function (response) {
@@ -100,7 +97,8 @@ async function submitForm() {
     })
     .catch(function (error) {
       console.log(error)
-      alert(error.response.data)
+      // 加上 ?. 避免後端沒回傳 data 時發生錯誤
+      alert(error.response?.data || '發生未知錯誤')
     })
 }
 </script>
