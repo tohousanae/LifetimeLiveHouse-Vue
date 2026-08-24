@@ -69,8 +69,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useAuthStore } from '@/stores/auth' // 💡 1. 引入 Pinia Store
 
-// 💡 對應後端的 UserController
+const authStore = useAuthStore() // 💡 2. 實例化
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
 const profile = ref({
@@ -80,6 +81,9 @@ const profile = ref({
 })
 
 async function fetchProfile() {
+  // 💡 3. 防呆：如果 Pinia 驗證為未登入，直接結束，不去打後端 API
+  if (!authStore.isLoggedIn) return
+
   try {
     const response = await axios.get(`${API_URL}/profile`, { withCredentials: true })
     profile.value = response.data
@@ -89,6 +93,12 @@ async function fetchProfile() {
 }
 
 async function updateProfile() {
+  // 💡 4. 防呆：更新資料前也檢查一次
+  if (!authStore.isLoggedIn) {
+    alert('請先登入後再進行修改')
+    return
+  }
+
   try {
     await axios.put(`${API_URL}/profile`, {
       name: profile.value.name,

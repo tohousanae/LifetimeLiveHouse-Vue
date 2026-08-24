@@ -31,26 +31,40 @@
 </template>
 
 <script setup>
-import axios from 'axios'
 import { ref } from 'vue'
-
-// 💡 對應後端的 LoginController
-const API_URL = `${import.meta.env.VITE_API_SPOTURL}/Login`
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import * as bootstrap from 'bootstrap' // 💡 引入 bootstrap 控制 Modal
 
 const email = ref('')
 const password = ref('')
 
+const authStore = useAuthStore()
+const router = useRouter()
+
 async function submitForm() {
   try {
-    const response = await axios.post(`${API_URL}/login`, {
-      email: email.value,
-      password: password.value
-    }, { withCredentials: true })
+    const message = await authStore.login(email.value, password.value)
+    alert(message || '登入成功')
     
-    alert(response.data)
-    window.location.reload() // 登入成功後重整網頁以套用身分
+    // 1. 登入成功，關閉 Bootstrap Modal
+    const modalEl = document.getElementById('userModal')
+    if (modalEl) {
+      const modal = bootstrap.Modal.getInstance(modalEl)
+      modal?.hide()
+    }
+    
+    // 2. 決定跳轉路徑：如果有被攔截的紀錄就去該去的地方，沒有就預設去會員中心
+    const targetPath = authStore.redirectPath || '/user-manage'
+    
+    // 3. 執行跳轉
+    router.push(targetPath)
+    
+    // 4. 清除紀錄
+    authStore.redirectPath = null
+    
   } catch (error) {
-    alert(error.response?.data?.message || error.response?.data || '發生未知錯誤')
+    alert(error.response?.data?.message || error.response?.data || '帳號或密碼錯誤')
   }
 }
 </script>
