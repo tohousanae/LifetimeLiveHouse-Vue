@@ -17,13 +17,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/">Vocaloid音樂/周邊/官方/世界計劃日台服情報</RouterLink>
-          </li>
-          <li class="nav-item">
             <RouterLink class="nav-link" to="/about">關於我們</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/">商品列表</RouterLink>
+            <RouterLink class="nav-link" to="/">吃點好吃的</RouterLink>
           </li>
           <li class="nav-item">
             <RouterLink class="nav-link" to="/">分店一覽</RouterLink>
