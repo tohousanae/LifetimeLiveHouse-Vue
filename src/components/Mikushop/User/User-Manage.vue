@@ -58,7 +58,10 @@
           </div>
           <div class="col-12 mt-4 d-flex justify-content-between align-items-center">
             <small class="text-muted">加入時間：{{ new Date(profile.createdDate).toLocaleDateString() }}</small>
-            <button type="submit" class="btn btn-primary px-4">儲存變更</button>
+            <div>
+              <RouterLink to="/" class="btn btn-outline-secondary px-4 me-2">回首頁</RouterLink>
+              <button type="submit" class="btn btn-primary px-4">儲存變更</button>
+            </div>
           </div>
         </form>
       </div>

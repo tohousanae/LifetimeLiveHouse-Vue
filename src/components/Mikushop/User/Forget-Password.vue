@@ -14,8 +14,9 @@
         <div class="alert alert-info">{{ message }}</div>
       </div>
 
-      <div class="col-12 mb-3">
-        <button class="btn btn-primary w-100" type="submit" :disabled="isLoading">
+      <<div class="col-12 mb-3 d-flex gap-2">
+        <RouterLink to="/" class="btn btn-outline-secondary w-50">回首頁</RouterLink>
+        <button class="btn btn-primary w-50" type="submit" :disabled="isLoading">
           {{ isLoading ? '發送中...' : '送出' }}
         </button>
       </div>

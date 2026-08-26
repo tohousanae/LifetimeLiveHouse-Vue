@@ -18,10 +18,11 @@
               <input v-model="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" />
               <label for="floatingPassword">密碼</label>
             </div>
-            <a href="/forgetpassword" class="float-end mb-3">忘記密碼</a>
+            <!-- 💡 加上 data-bs-dismiss="modal"，點擊時順便關閉 Modal -->
+            <a href="javascript:;" class="float-end mb-3" @click="navigateFromModal('/forgetpassword')">忘記密碼</a>
             <button type="submit" class="btn btn-primary form-control mb-3">登入</button>
             <div class="text-center">
-              <a href="/register">還未加入我們嗎？立即註冊！</a>
+              <a href="javascript:;" @click="navigateFromModal('/register')">還未加入我們嗎？立即註冊！</a>
             </div>
           </form>
         </div>
@@ -32,39 +33,59 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute, RouterLink } from 'vue-router' // 💡 確保有引入 useRouter
 import { useAuthStore } from '@/stores/auth'
-import * as bootstrap from 'bootstrap' // 💡 引入 bootstrap 控制 Modal
+import * as bootstrap from 'bootstrap' // 💡 確保有引入 bootstrap
 
 const email = ref('')
 const password = ref('')
 
 const authStore = useAuthStore()
-const router = useRouter()
+const router = useRouter() // 💡 必須實例化 router，下面的 router.push 才會動！
+const route = useRoute()
 
 async function submitForm() {
   try {
     const message = await authStore.login(email.value, password.value)
     alert(message || '登入成功')
     
-    // 1. 登入成功，關閉 Bootstrap Modal
+    // 登入成功，關閉 Bootstrap Modal
     const modalEl = document.getElementById('userModal')
     if (modalEl) {
       const modal = bootstrap.Modal.getInstance(modalEl)
       modal?.hide()
     }
     
-    // 2. 決定跳轉路徑：如果有被攔截的紀錄就去該去的地方，沒有就預設去會員中心
     const targetPath = authStore.redirectPath || '/user-manage'
-    
-    // 3. 執行跳轉
     router.push(targetPath)
-    
-    // 4. 清除紀錄
     authStore.redirectPath = null
     
   } catch (error) {
     alert(error.response?.data?.message || error.response?.data || '帳號或密碼錯誤')
   }
+}
+
+// 💡 終極版跳轉函式：先關視窗，等動畫跑完再換頁
+// 💡 終極版跳轉函式：強制清除 Bootstrap 殘留黑幕與鎖定狀態
+function navigateFromModal(path) {
+  const modalEl = document.getElementById('userModal')
+  if (modalEl) {
+    const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl)
+    modal.hide() // 觸發關閉視窗
+  }
+  
+  // 💡 關鍵解法：延遲 150 毫秒後，手動強制打掃戰場
+  setTimeout(() => {
+    // 1. 強制清除畫面上所有殘留的 Bootstrap 半透明黑幕
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+    
+    // 2. 解除 body 的鎖定狀態與滾動限制
+    document.body.classList.remove('modal-open')
+    document.body.style.overflow = ''
+    document.body.style.paddingRight = ''
+
+    // 3. 安全無誤地進行 Vue Router 換頁
+    router.push(path)
+  }, 150)
 }
 </script>

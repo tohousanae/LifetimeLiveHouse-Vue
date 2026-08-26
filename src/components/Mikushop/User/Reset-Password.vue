@@ -32,8 +32,9 @@
         <div class="alert alert-danger">{{ errorMessage }}</div>
       </div>
 
-      <div class="col-12 mb-3">
-        <button class="btn btn-primary w-100" type="submit">確認重設</button>
+      <div class="col-12 mb-3 d-flex gap-2">
+        <RouterLink to="/" class="btn btn-outline-secondary w-50">回首頁</RouterLink>
+        <button class="btn btn-primary w-50" type="submit">確認重設</button>
       </div>
     </form>
   </div>
