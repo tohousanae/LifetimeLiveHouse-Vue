@@ -69,49 +69,53 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { useAuthStore } from '@/stores/auth' // 💡 1. 引入 Pinia Store
+import { useAuthStore } from '@/stores/auth'
 
-const authStore = useAuthStore() // 💡 2. 實例化
+const authStore = useAuthStore()
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
+// 本地端的 profile，用來綁定表單 (v-model)
 const profile = ref({
   email: '', name: '', cellphoneNumber: '', birthday: '',
   cash: 0, memberPoint: 0, createdDate: '',
   isEmailVerified: false, isPhoneVerified: false
 })
 
-async function fetchProfile() {
-  // 💡 3. 防呆：如果 Pinia 驗證為未登入，直接結束，不去打後端 API
-  if (!authStore.isLoggedIn) return
-
-  try {
-    const response = await axios.get(`${API_URL}/profile`, { withCredentials: true })
-    profile.value = response.data
-  } catch (error) {
-    alert('無法取得會員資料，請確認是否已登入')
+onMounted(() => {
+  // 💡 1. 直接從 Pinia 拿現成的快取資料，0 次 API 請求！
+  if (authStore.isLoggedIn) {
+    // 使用展開運算子 (...) 複製一份資料給本地表單
+    // 這樣在使用者還沒按下「儲存變更」前，打字修改不會直接污染到 Pinia 的全域狀態
+    profile.value = { ...authStore.profile }
   }
-}
+})
 
 async function updateProfile() {
-  // 💡 4. 防呆：更新資料前也檢查一次
   if (!authStore.isLoggedIn) {
     alert('請先登入後再進行修改')
     return
   }
 
   try {
+    // 發送更新請求給後端
     await axios.put(`${API_URL}/profile`, {
       name: profile.value.name,
       cellphoneNumber: profile.value.cellphoneNumber,
       birthday: profile.value.birthday
     }, { withCredentials: true })
+    
     alert('會員資料更新成功！')
+
+    // 💡 2. 儲存成功後，同步更新 Pinia 裡的全域狀態
+    // 這樣一來，導覽列上的名字也會瞬間跟著變，不需要重新整理網頁！
+    authStore.profile.name = profile.value.name
+    authStore.profile.cellphoneNumber = profile.value.cellphoneNumber
+    authStore.profile.birthday = profile.value.birthday
+
   } catch (error) {
     alert(error.response?.data?.message || error.response?.data || '更新失敗，請稍後再試')
   }
 }
-
-onMounted(() => fetchProfile())
 </script>
 
 <style scoped> .container { min-height: 80vh; } </style>
