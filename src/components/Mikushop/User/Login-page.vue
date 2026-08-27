@@ -14,9 +14,14 @@
               <input v-model="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" />
               <label for="floatingInput">電子郵件</label>
             </div>
-            <div class="form-floating mb-3">
-              <input v-model="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" />
-              <label for="floatingPassword">密碼</label>
+            <div class="input-group mb-3">
+              <div class="form-floating">
+                <input v-model="password" :type="showPassword ? 'text' : 'password'" class="form-control" id="floatingPassword" placeholder="Password" />
+                <label for="floatingPassword">密碼</label>
+              </div>
+              <button class="btn btn-outline-secondary" type="button" @click="showPassword = !showPassword">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </button>
             </div>
             <!-- 💡 加上 data-bs-dismiss="modal"，點擊時順便關閉 Modal -->
             <a href="javascript:;" class="float-end mb-3" @click="navigateFromModal('/forgetpassword')">忘記密碼</a>
@@ -39,6 +44,7 @@ import * as bootstrap from 'bootstrap' // 💡 確保有引入 bootstrap
 
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false) // 💡 新增這行：預設隱藏密碼
 
 const authStore = useAuthStore()
 const router = useRouter() // 💡 必須實例化 router，下面的 router.push 才會動！
