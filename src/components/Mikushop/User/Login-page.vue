@@ -1,22 +1,24 @@
 <template>
+  <!-- ================= 1. 會員登入互動 Modal ================= -->
   <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">登入會員</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="$event.target.blur()"></button>
         </div>
         <div class="modal-body">
           <p>立即登入，隨時收到獨家優惠</p>
 
+          <!-- 登入表單 (攔截預設提交，改用非同步 submitForm) -->
           <form @submit.prevent="submitForm">
-            <!-- 帳號輸入框 -->
+            <!-- 帳號 (電子郵件) 輸入框 -->
             <div class="form-floating mb-3">
               <input v-model="email" type="email" class="form-control" :class="{'is-invalid': errorMessage}" id="floatingInput" placeholder="name@example.com" />
               <label for="floatingInput">電子郵件</label>
             </div>
             
-            <!-- 密碼輸入區塊 -->
+            <!-- 密碼輸入區塊 (含顯示/隱藏密碼切換按鈕) -->
             <div class="mb-3">
               <div class="input-group">
                 <div class="form-floating">
@@ -28,13 +30,13 @@
                 </button>
               </div>
               
-              <!-- 放置在密碼下方的小紅字錯誤提示 -->
+              <!-- 錯誤訊息提示紅字 -->
               <div v-if="errorMessage" class="text-danger small mt-1 ms-1 text-start fw-bold">
                 <i class="bi bi-exclamation-circle me-1"></i>{{ errorMessage }}
               </div>
             </div>
 
-            <!-- 下方連結與按鈕 -->
+            <!-- 下方輔助連結與登入按鈕 -->
             <a href="javascript:;" class="float-end mb-3" @click="navigateFromModal('/forgetpassword')">忘記密碼</a>
             <button type="submit" class="btn btn-primary form-control mb-3">登入</button>
             <div class="text-center">
@@ -46,7 +48,7 @@
     </div>
   </div>
 
-  <!-- 💡 新增：登入成功的提示 Modal -->
+  <!-- ================= 2. 登入成功提示 Modal ================= -->
   <div class="modal fade" id="successLoginModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
@@ -55,7 +57,7 @@
         </div>
         <div class="modal-body text-center py-4">
           <i class="bi bi-check-circle-fill text-success fs-1 mb-2 d-block"></i>
-          <p class="mb-0 fw-bold">登入成功</p>
+          <p class="mb-0 fw-bold">登入成功，歡迎回來！</p>
         </div>
         <div class="modal-footer justify-content-center border-0">
           <button type="button" class="btn btn-primary px-4" @click="handleLoginSuccessClose">確定</button>
@@ -69,8 +71,9 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import * as bootstrap from 'bootstrap'
 
+// 表單雙向繫結變數
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
@@ -80,48 +83,62 @@ const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 
+// Modal 實例與串接旗標[cite: 10]
+let userModalInstance = null
 let successLoginModalInstance = null
+let showSuccessWhenHidden = false // 💡 控制登入視窗關閉後才彈出成功框的旗標[cite: 10]
 
 onMounted(() => {
+  // 1. 初始化登入 Modal 並監聽其關閉事件
+  const userEl = document.getElementById('userModal')
+  if (userEl) {
+    userModalInstance = new bootstrap.Modal(userEl)
+
+    // 💡 關鍵防護：當登入視窗完全收合後，才安全地呼叫成功提示框[cite: 10]
+    userEl.addEventListener('hidden.bs.modal', () => {
+      if (showSuccessWhenHidden) {
+        showSuccessWhenHidden = false
+        if (successLoginModalInstance) {
+          successLoginModalInstance.show()
+        }
+      }
+    })
+  }
+
+  // 2. 初始化登入成功 Modal[cite: 10]
   const successEl = document.getElementById('successLoginModal')
   if (successEl) {
     successLoginModalInstance = new bootstrap.Modal(successEl)
   }
 })
 
+// 送出登入表單[cite: 10]
 async function submitForm() {
-  errorMessage.value = '' // 先清空先前的錯誤
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur()
+  }
+
+  errorMessage.value = '' // 清除先前的錯誤
 
   try {
     await authStore.login(email.value, password.value)
     
-    // 1. 先關閉原本的登入輸入 Modal
-    const modalEl = document.getElementById('userModal')
-    if (modalEl) {
-      const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl)
-      modal.hide()
+    // 設定旗標準備接力開啟成功提示框[cite: 10]
+    showSuccessWhenHidden = true
+
+    // 隱藏登入 Modal[cite: 10]
+    if (userModalInstance) {
+      userModalInstance.hide()
     }
     
-    // 2. 彈出「登入成功」的提示 Modal
-    setTimeout(() => {
-      // 確保清除登入視窗帶來的背景殘留，讓成功 Modal 順利顯示
-      document.querySelectorAll('.modal-backdrop').forEach((el, index) => {
-        if (index > 0) el.remove() // 保留最後一個給成功 Modal 用
-      })
-
-      if (successLoginModalInstance) {
-        successLoginModalInstance.show()
-      }
-    }, 150)
-    
   } catch (error) {
+    // 擷取後端回傳的錯誤訊息
     errorMessage.value = error.response?.data?.message || error.response?.data || '帳號或密碼錯誤，請重新輸入'
   }
 }
 
-// 3. 點擊登入成功 Modal 的「確定」按鈕後
+// 3. 點擊登入成功 Modal 的「確定」按鈕後[cite: 10]
 function handleLoginSuccessClose() {
-  // 移除焦點防止 aria-hidden 警告
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
   }
@@ -130,14 +147,13 @@ function handleLoginSuccessClose() {
     successLoginModalInstance.hide()
   }
 
-  // 清除所有 Modal 背景黑幕與捲軸鎖定
+  // 💡 強制清除黑幕與鎖定，並將使用者導向原本被攔截的網址[cite: 10]
   setTimeout(() => {
     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
     document.body.classList.remove('modal-open')
     document.body.style.overflow = ''
     document.body.style.paddingRight = ''
 
-    // 如果有原本被攔截的網址則跳轉，否則留在當前頁面
     if (authStore.redirectPath) {
       router.push(authStore.redirectPath)
       authStore.redirectPath = null
@@ -145,12 +161,17 @@ function handleLoginSuccessClose() {
   }, 150)
 }
 
+// 點擊 Modal 內的切換連結 (如忘記密碼、註冊)
 function navigateFromModal(path) {
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur()
+  }
+  
   errorMessage.value = ''
-  const modalEl = document.getElementById('userModal')
-  if (modalEl) {
-    const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl)
-    modal.hide()
+  showSuccessWhenHidden = false // 取消連動
+
+  if (userModalInstance) {
+    userModalInstance.hide()
   }
   
   setTimeout(() => {

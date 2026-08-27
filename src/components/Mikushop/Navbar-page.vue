@@ -1,9 +1,11 @@
 <template>
-  <!-- 主導覽 start -->
+  <!-- ================= 1. 主導覽列區塊 (Navbar) ================= -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
+      <!-- 網站 Logo 連結 -->
       <RouterLink class="navbar-brand" to="/">LivetimeLivehouse</RouterLink>
       
+      <!-- 手機版漢堡選單按鈕 -->
       <button
         class="navbar-toggler"
         type="button"
@@ -15,7 +17,9 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
+      <!-- 導覽列內容收合容器 -->
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- 導覽連結清單 -->
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <RouterLink class="nav-link" to="/about">關於我們</RouterLink>
@@ -34,26 +38,32 @@
           </li>
         </ul>
         
+        <!-- 頂部搜尋列 -->
         <form class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
           <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
         </form>
 
-        <!-- 👤 會員專區 (狀態切換區) -->
+        <!-- ================= 2. 會員專區與購物車 ================= -->
         <div class="d-flex align-items-center mt-3 mt-lg-0 ms-lg-3">
-          <!-- 狀態 A：未登入 -->
-          <a v-if="!authStore.isLoggedIn" href="javascript:;" data-bs-toggle="modal" data-bs-target="#userModal">
+          
+          <!-- 狀態 A：未登入 (顯示頭像與「登入/註冊」文字，手機版自動隱藏文字)[cite: 9] -->
+          <a v-if="!authStore.isLoggedIn" href="javascript:;" class="text-decoration-none d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#userModal">
             <i class="bi bi-person-circle fs-3"></i>
+            <span class="ms-2 fw-bold d-none d-lg-block">登入 / 註冊</span>
           </a>
 
-          <!-- 狀態 B：已登入 -->
+          <!-- 狀態 B：已登入 (顯示打勾頭像與會員名稱)[cite: 9] -->
           <div v-else class="dropdown" ref="dropdownContainer">
             <a href="javascript:;" class="text-decoration-none dropdown-toggle d-flex align-items-center" id="userDropdown" @click.prevent="toggleDropdown">
               <i class="bi bi-person-check-fill fs-3"></i>
-              <span v-if="authStore.profile.name" class="ms-2 fw-bold">{{ authStore.profile.name }}</span>
+              <!-- 超長名字防破版處理 (文字截斷) -->
+              <span v-if="authStore.profile.name" class="ms-2 fw-bold d-inline-block text-truncate" style="max-width: 120px; vertical-align: bottom;">
+                {{ authStore.profile.name }}
+              </span>
             </a>
             
-            <!-- 💡 下拉選單：加入點數與儲值金資訊，並保持簡潔俐落 -->
+            <!-- 會員下拉選單 (包含點數、儲值金與功能選單)[cite: 9] -->
             <ul class="dropdown-menu dropdown-menu-lg-end shadow-sm mt-2 p-2" :class="{ show: isDropdownOpen }" aria-labelledby="userDropdown" style="min-width: 220px;">
               <!-- 點數與儲值金摘要小卡 -->
               <li class="px-3 py-2 bg-light rounded mb-2">
@@ -73,7 +83,7 @@
             </ul>
           </div>
 
-          <!-- 🛒 購物車 -->
+          <!-- 🛒 購物車觸發按鈕 -->
           <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#cartModal" class="ms-3">
             <i class="bi bi-cart fs-3"></i>
           </a>
@@ -81,12 +91,12 @@
       </div>
     </div>
   </nav>
-  <!-- 主導覽 end -->
 
-  <!-- 登入 modal -->
+  <!-- ================= 3. 各式彈跳視窗 (Modals) ================= -->
+  <!-- 引入登入元件 -->
   <Login></Login>
 
-  <!-- 購物車 modal -->
+  <!-- 購物車 Modal -->
   <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -105,26 +115,26 @@
     </div>
   </div>
 
-  <!-- 💡 1. 確認是否登出的詢問 Modal (取代原生 confirm) -->
+  <!-- Modal A：確認是否登出的詢問視窗[cite: 9] -->
   <div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
         <div class="modal-header bg-light">
           <h5 class="modal-title fs-6">系統確認</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="$event.target.blur()"></button>
         </div>
         <div class="modal-body text-center py-4">
           <p class="mb-0 fw-bold">確定要登出系統嗎？</p>
         </div>
         <div class="modal-footer justify-content-center border-0 gap-2">
-          <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal" @click="$event.target.blur()">取消</button>
           <button type="button" class="btn btn-danger px-3" @click="executeLogout">確定登出</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 💡 2. 登出成功的提示 Modal -->
+  <!-- Modal B：獨立的「登出成功」提示視窗[cite: 9] -->
   <div class="modal fade" id="successLogoutModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
@@ -148,22 +158,26 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
 import Login from '@/components/Mikushop/User/Login-page.vue'
 import { useAuthStore } from '@/stores/auth'
-import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import * as bootstrap from 'bootstrap'
 
 const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 
+// 控制會員下拉選單開關狀態
 const isDropdownOpen = ref(false)
 
-// Modal 實例變數
-let confirmModalInstance = null
-let successModalInstance = null
+// Modal 實例與控制旗標
+let confirmLogoutModalInstance = null
+let successLogoutModalInstance = null
+let showSuccessWhenHidden = false // 💡 關鍵旗標：控制確認框完全關閉後才接力彈出成功框[cite: 9]
 
+// 切換會員下拉選單
 function toggleDropdown() {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
+// 切換手機版導覽列收合
 function toggleNavbar() {
   const navbarCollapse = document.getElementById('navbarSupportedContent')
   if (navbarCollapse) {
@@ -172,6 +186,7 @@ function toggleNavbar() {
   }
 }
 
+// 強制關閉所有選單與下拉
 function forceCloseAll() {
   const navbarCollapse = document.getElementById('navbarSupportedContent')
   if (navbarCollapse && navbarCollapse.classList.contains('show')) {
@@ -181,9 +196,8 @@ function forceCloseAll() {
   isDropdownOpen.value = false
 }
 
-// 全域點擊事件：點擊空白處時自動收合所有選單
+// 全域點擊事件：點擊空白處時自動收合選單（排除 Modal 內部點擊）
 function handleDocumentClick(event) {
-  // 💡 關鍵修正：判斷點擊目標是否在 Modal 內，或者是 Modal 的黑幕。如果是，直接中斷，不要收合選單！
   if (event.target.closest('.modal') || event.target.closest('.modal-backdrop')) {
     return
   }
@@ -192,7 +206,6 @@ function handleDocumentClick(event) {
   const toggler = document.querySelector('.navbar-toggler')
   const dropdownEl = document.querySelector('.dropdown')
 
-  // 如果漢堡選單是開著的，且點擊的地方不在選單與開關上，就關閉它
   if (navbarCollapse && navbarCollapse.classList.contains('show')) {
     if (!navbarCollapse.contains(event.target) && !toggler.contains(event.target)) {
       const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navbarCollapse)
@@ -200,80 +213,98 @@ function handleDocumentClick(event) {
     }
   }
 
-  // 如果點擊的地方不在會員 dropdown 內，就關閉會員選單
   if (dropdownEl && !dropdownEl.contains(event.target)) {
     isDropdownOpen.value = false
   }
 }
 
+// 元件掛載時初始化 Bootstrap Modal 並綁定事件監聽
 onMounted(() => {
   document.addEventListener('click', handleDocumentClick)
 
-  // 初始化兩個登出用的 Modal
+  // 1. 初始化確認登出 Modal[cite: 9]
   const confirmEl = document.getElementById('confirmLogoutModal')
-  if (confirmEl) confirmModalInstance = new bootstrap.Modal(confirmEl)
+  if (confirmEl) {
+    confirmLogoutModalInstance = new bootstrap.Modal(confirmEl)
 
+    // 💡 核心防護：利用 hidden 事件，等確認框黑幕完全退場後，才安全開啟成功提示框[cite: 9]
+    confirmEl.addEventListener('hidden.bs.modal', () => {
+      if (showSuccessWhenHidden) {
+        showSuccessWhenHidden = false
+        if (successLogoutModalInstance) {
+          successLogoutModalInstance.show()
+        }
+      }
+    })
+  }
+
+  // 2. 初始化登出成功 Modal[cite: 9]
   const successEl = document.getElementById('successLogoutModal')
-  if (successEl) successModalInstance = new bootstrap.Modal(successEl)
+  if (successEl) {
+    successLogoutModalInstance = new bootstrap.Modal(successEl)
+
+    // 💡 關鍵新增：當登出成功 Modal 完全關閉、動畫跑完後，才安全地清場與轉址
+    successEl.addEventListener('hidden.bs.modal', () => {
+      document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+      document.body.classList.remove('modal-open')
+      document.body.style.overflow = ''
+      document.body.style.paddingRight = ''
+
+      if (router.currentRoute.value.meta.requiresAuth) {
+        router.push('/')
+      }
+    })
+  }
 })
 
+// 移除全域點擊監聽
 onUnmounted(() => {
   document.removeEventListener('click', handleDocumentClick)
 })
 
+// 路由改變時自動收合選單
 watch(() => route.path, () => {
   forceCloseAll()
 })
 
-// 1. 點擊登出按鈕：關閉選單，並彈出「確認是否登出」的 Modal
+// 點擊登出按鈕：收合選單並開啟確認 Modal[cite: 9]
 function confirmLogout() {
   forceCloseAll()
-  if (confirmModalInstance) {
-    confirmModalInstance.show()
+  showSuccessWhenHidden = false
+  if (confirmLogoutModalInstance) {
+    confirmLogoutModalInstance.show()
   }
 }
 
-// 2. 確定登出：向後端發送登出請求，成功後彈出「登出成功」Modal
+// 執行登出動作：呼叫 API 並設定接力旗標，然後關閉確認框[cite: 9]
 async function executeLogout() {
-  // 💡 關鍵修正：在關閉 Modal 前，讓當前聚焦的按鈕失去焦點 (blur)，解除 aria-hidden 衝突
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
-  }
-
-  if (confirmModalInstance) {
-    confirmModalInstance.hide()
   }
 
   try {
     await authStore.logout()
-    
-    // 顯示成功提示 Modal
-    if (successModalInstance) {
-      successModalInstance.show()
-    }
   } catch (error) {
-    alert('登出發生錯誤，請稍後再試')
+    console.error('登出發生錯誤', error)
+  }
+
+  // 設定準備開啟成功框的旗標
+  showSuccessWhenHidden = true
+
+  // 隱藏確認 Modal（會觸發上方 hidden 事件）[cite: 9]
+  if (confirmLogoutModalInstance) {
+    confirmLogoutModalInstance.hide()
   }
 }
 
-// 3. 點擊登出成功 Modal 的確定按鈕後
+// 點擊登出成功 Modal 的「確定」按鈕後[cite: 9]
 function handleSuccessModalClose() {
-  // 💡 同樣在關閉前讓按鈕失去焦點
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
   }
 
-  if (successModalInstance) {
-    successModalInstance.hide()
-  }
-  
-  // 清除殘留黑幕
-  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
-  document.body.classList.remove('modal-open')
-  document.body.style.overflow = ''
-
-  if (router.currentRoute.value.meta.requiresAuth) {
-    router.push('/')
+  if (successLogoutModalInstance) {
+    successLogoutModalInstance.hide() // 讓 Bootstrap 自行優雅關閉並觸發 hidden 事件
   }
 }
 </script>
