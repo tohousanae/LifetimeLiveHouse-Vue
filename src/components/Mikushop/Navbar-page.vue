@@ -47,19 +47,29 @@
           </a>
 
           <!-- 狀態 B：已登入 -->
-          <!-- 💡 加上 ref 讓 Vue 可以精準抓到這個 dropdown 容器 -->
           <div v-else class="dropdown" ref="dropdownContainer">
-            <!-- 💡 改用 @click.prevent 呼叫我們自己寫的手動開關函式 -->
             <a href="javascript:;" class="text-decoration-none dropdown-toggle d-flex align-items-center" id="userDropdown" @click.prevent="toggleDropdown">
               <i class="bi bi-person-check-fill fs-3"></i>
               <span v-if="authStore.profile.name" class="ms-2 fw-bold">{{ authStore.profile.name }}</span>
             </a>
             
-            <!-- 💡 加上 show 類別的動態切換支援 -->
-            <ul class="dropdown-menu dropdown-menu-lg-end shadow-sm mt-2" :class="{ show: isDropdownOpen }" aria-labelledby="userDropdown">
-              <li><RouterLink class="dropdown-item" to="/user-manage" @click="isDropdownOpen = false"><i class="bi bi-card-list me-2"></i>會員中心</RouterLink></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-danger" href="javascript:;" @click="handleLogout"><i class="bi bi-box-arrow-right me-2"></i>登出</a></li>
+            <!-- 💡 下拉選單：加入點數與儲值金資訊，並保持簡潔俐落 -->
+            <ul class="dropdown-menu dropdown-menu-lg-end shadow-sm mt-2 p-2" :class="{ show: isDropdownOpen }" aria-labelledby="userDropdown" style="min-width: 220px;">
+              <!-- 點數與儲值金摘要小卡 -->
+              <li class="px-3 py-2 bg-light rounded mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="small text-muted">回饋點數</span>
+                  <span class="fw-bold text-primary">{{ authStore.profile.memberPoint || 0 }} Pts</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="small text-muted">帳戶儲值金</span>
+                  <span class="fw-bold text-success">NT$ {{ authStore.profile.cash || 0 }}</span>
+                </div>
+              </li>
+
+              <li><RouterLink class="dropdown-item rounded py-2" to="/user-manage" @click="isDropdownOpen = false"><i class="bi bi-card-list me-2"></i>會員中心</RouterLink></li>
+              <li><hr class="dropdown-divider my-1"></li>
+              <li><a class="dropdown-item text-danger rounded py-2" href="javascript:;" @click="confirmLogout"><i class="bi bi-box-arrow-right me-2"></i>登出</a></li>
             </ul>
           </div>
 
@@ -73,11 +83,10 @@
   </nav>
   <!-- 主導覽 end -->
 
-  <!-- 登入modal start -->
+  <!-- 登入 modal -->
   <Login></Login>
-  <!-- 登入modal end -->
 
-   <!-- 購物車modal start -->
+  <!-- 購物車 modal -->
   <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -95,7 +104,43 @@
       </div>
     </div>
   </div>
-  <!-- 購物車modal end -->
+
+  <!-- 💡 1. 確認是否登出的詢問 Modal (取代原生 confirm) -->
+  <div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title fs-6">系統確認</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <p class="mb-0 fw-bold">確定要登出系統嗎？</p>
+        </div>
+        <div class="modal-footer justify-content-center border-0 gap-2">
+          <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-danger px-3" @click="executeLogout">確定登出</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💡 2. 登出成功的提示 Modal -->
+  <div class="modal fade" id="successLogoutModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title fs-6">系統提示</h5>
+        </div>
+        <div class="modal-body text-center py-4">
+          <i class="bi bi-check-circle-fill text-success fs-1 mb-2 d-block"></i>
+          <p class="mb-0 fw-bold">已成功登出！</p>
+        </div>
+        <div class="modal-footer justify-content-center border-0">
+          <button type="button" class="btn btn-primary px-4" @click="handleSuccessModalClose">確定</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -109,14 +154,16 @@ const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 
-// 💡 新增：用來手動控制會員選單開關的狀態變數
 const isDropdownOpen = ref(false)
+
+// Modal 實例變數
+let confirmModalInstance = null
+let successModalInstance = null
 
 function toggleDropdown() {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
-// 控制漢堡選單展開/收合
 function toggleNavbar() {
   const navbarCollapse = document.getElementById('navbarSupportedContent')
   if (navbarCollapse) {
@@ -125,19 +172,15 @@ function toggleNavbar() {
   }
 }
 
-// 強制關閉所有選單
 function forceCloseAll() {
-  // 關閉漢堡選單
   const navbarCollapse = document.getElementById('navbarSupportedContent')
   if (navbarCollapse && navbarCollapse.classList.contains('show')) {
     const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navbarCollapse)
     bsCollapse.hide()
   }
-  // 關閉會員下拉選單
   isDropdownOpen.value = false
 }
 
-// 全域點擊事件：點擊空白處時自動收合所有選單
 function handleDocumentClick(event) {
   const navbarCollapse = document.getElementById('navbarSupportedContent')
   const toggler = document.querySelector('.navbar-toggler')
@@ -150,7 +193,6 @@ function handleDocumentClick(event) {
     }
   }
 
-  // 如果點擊的地方不在會員 dropdown 內，就關閉會員選單
   if (dropdownEl && !dropdownEl.contains(event.target)) {
     isDropdownOpen.value = false
   }
@@ -158,28 +200,62 @@ function handleDocumentClick(event) {
 
 onMounted(() => {
   document.addEventListener('click', handleDocumentClick)
+
+  // 初始化兩個登出用的 Modal
+  const confirmEl = document.getElementById('confirmLogoutModal')
+  if (confirmEl) confirmModalInstance = new bootstrap.Modal(confirmEl)
+
+  const successEl = document.getElementById('successLogoutModal')
+  if (successEl) successModalInstance = new bootstrap.Modal(successEl)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleDocumentClick)
 })
 
-// 監聽路由切換自動收合
 watch(() => route.path, () => {
   forceCloseAll()
 })
 
-async function handleLogout() {
+// 1. 點擊登出按鈕：關閉選單，並彈出「確認是否登出」的 Modal
+function confirmLogout() {
   forceCloseAll()
-  if (confirm('確定要登出嗎？')) {
-    try {
-      await authStore.logout()
-      if (router.currentRoute.value.meta.requiresAuth) {
-        router.push('/')
-      }
-    } catch (error) {
-      alert('登出發生錯誤，請稍後再試')
+  if (confirmModalInstance) {
+    confirmModalInstance.show()
+  }
+}
+
+// 2. 確定登出：向後端發送登出請求，成功後彈出「登出成功」Modal
+async function executeLogout() {
+  if (confirmModalInstance) {
+    confirmModalInstance.hide()
+  }
+
+  try {
+    await authStore.logout()
+    
+    // 顯示成功提示 Modal
+    if (successModalInstance) {
+      successModalInstance.show()
     }
+  } catch (error) {
+    alert('登出發生錯誤，請稍後再試')
+  }
+}
+
+// 3. 點擊登出成功 Modal 的確定按鈕後，若在保護路由則轉址回首頁
+function handleSuccessModalClose() {
+  if (successModalInstance) {
+    successModalInstance.hide()
+  }
+  
+  // 清除殘留黑幕
+  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+  document.body.classList.remove('modal-open')
+  document.body.style.overflow = ''
+
+  if (router.currentRoute.value.meta.requiresAuth) {
+    router.push('/')
   }
 }
 </script>

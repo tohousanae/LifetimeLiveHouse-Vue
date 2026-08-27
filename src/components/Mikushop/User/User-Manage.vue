@@ -7,7 +7,7 @@
       <div class="col-md-6 mb-3">
         <div class="card bg-primary text-white shadow-sm h-100">
           <div class="card-body">
-            <h5 class="card-title">MikuMiku 回饋點數</h5>
+            <h5 class="card-title">回饋點數</h5>
             <h2 class="mb-0">{{ profile.memberPoint || 0 }} Pts</h2>
           </div>
         </div>
