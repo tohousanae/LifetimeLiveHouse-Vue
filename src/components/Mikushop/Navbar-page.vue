@@ -181,11 +181,18 @@ function forceCloseAll() {
   isDropdownOpen.value = false
 }
 
+// 全域點擊事件：點擊空白處時自動收合所有選單
 function handleDocumentClick(event) {
+  // 💡 關鍵修正：判斷點擊目標是否在 Modal 內，或者是 Modal 的黑幕。如果是，直接中斷，不要收合選單！
+  if (event.target.closest('.modal') || event.target.closest('.modal-backdrop')) {
+    return
+  }
+
   const navbarCollapse = document.getElementById('navbarSupportedContent')
   const toggler = document.querySelector('.navbar-toggler')
   const dropdownEl = document.querySelector('.dropdown')
 
+  // 如果漢堡選單是開著的，且點擊的地方不在選單與開關上，就關閉它
   if (navbarCollapse && navbarCollapse.classList.contains('show')) {
     if (!navbarCollapse.contains(event.target) && !toggler.contains(event.target)) {
       const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navbarCollapse)
@@ -193,6 +200,7 @@ function handleDocumentClick(event) {
     }
   }
 
+  // 如果點擊的地方不在會員 dropdown 內，就關閉會員選單
   if (dropdownEl && !dropdownEl.contains(event.target)) {
     isDropdownOpen.value = false
   }
@@ -227,6 +235,11 @@ function confirmLogout() {
 
 // 2. 確定登出：向後端發送登出請求，成功後彈出「登出成功」Modal
 async function executeLogout() {
+  // 💡 關鍵修正：在關閉 Modal 前，讓當前聚焦的按鈕失去焦點 (blur)，解除 aria-hidden 衝突
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur()
+  }
+
   if (confirmModalInstance) {
     confirmModalInstance.hide()
   }
@@ -243,8 +256,13 @@ async function executeLogout() {
   }
 }
 
-// 3. 點擊登出成功 Modal 的確定按鈕後，若在保護路由則轉址回首頁
+// 3. 點擊登出成功 Modal 的確定按鈕後
 function handleSuccessModalClose() {
+  // 💡 同樣在關閉前讓按鈕失去焦點
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur()
+  }
+
   if (successModalInstance) {
     successModalInstance.hide()
   }
