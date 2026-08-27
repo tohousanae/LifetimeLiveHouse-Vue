@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <!-- 會員資料修改表單 (已移除性別) -->
+    <!-- 會員資料修改表單 -->
     <div class="card shadow-sm">
       <div class="card-body p-4">
         <form @submit.prevent="updateProfile" class="row g-3 needs-validation">
@@ -56,16 +56,37 @@
             <label class="form-label">生日</label>
             <input type="datetime-local" class="form-control" v-model="profile.birthday" />
           </div>
-          <div class="col-12 mt-4 d-flex justify-content-between align-items-center">
-            <small class="text-muted">加入時間：{{ new Date(profile.createdDate).toLocaleDateString() }}</small>
-            <div>
-              <RouterLink to="/" class="btn btn-outline-secondary px-4 me-2">回首頁</RouterLink>
-              <button type="submit" class="btn btn-primary px-4">儲存變更</button>
+          
+          <!-- 💡 修正按鈕排版：使用 flex-column 與 flex-sm-row 搭配 gap-3，確保直向與橫向都有完美間距 -->
+          <div class="col-12 mt-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+            <small class="text-muted mb-3 mb-md-0">加入時間：{{ new Date(profile.createdDate).toLocaleDateString() }}</small>
+            <div class="d-flex flex-column flex-sm-row gap-3 w-100 justify-content-sm-end" style="max-width: 400px;">
+              <RouterLink to="/" class="btn btn-outline-secondary px-4 w-100">回首頁</RouterLink>
+              <button type="submit" class="btn btn-primary px-4 w-100">儲存變更</button>
             </div>
           </div>
         </form>
       </div>
     </div>
+
+    <!-- 💡 新增：取代原生 alert 的系統提示 Modal -->
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header bg-light">
+            <h5 class="modal-title fs-6">系統提示</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center py-4">
+            <p class="mb-0 fw-bold">{{ modalMessage }}</p>
+          </div>
+          <div class="modal-footer justify-content-center border-0">
+            <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">確認</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </div>
 </template>
 
@@ -73,52 +94,74 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
+import * as bootstrap from 'bootstrap' // 💡 確保引入 Bootstrap 以操作 Modal
 
 const authStore = useAuthStore()
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
 
-// 本地端的 profile，用來綁定表單 (v-model)
 const profile = ref({
   email: '', name: '', cellphoneNumber: '', birthday: '',
   cash: 0, memberPoint: 0, createdDate: '',
   isEmailVerified: false, isPhoneVerified: false
 })
 
+// 💡 新增：用來綁定 Modal 提示文字的變數
+const modalMessage = ref('')
+let infoModalInstance = null
+
 onMounted(() => {
-  // 💡 1. 直接從 Pinia 拿現成的快取資料，0 次 API 請求！
+  // 💡 防禦機制：強制解除可能殘留的登入黑幕與捲軸鎖定
+  document.body.classList.remove('modal-open')
+  document.body.style.overflow = ''
+  document.body.style.paddingRight = ''
+  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+
+  // 💡 初始化 Modal 實例
+  const modalEl = document.getElementById('infoModal')
+  if (modalEl) {
+    infoModalInstance = new bootstrap.Modal(modalEl)
+  }
+
+  // 從 Pinia 拿現成的快取資料
   if (authStore.isLoggedIn) {
-    // 使用展開運算子 (...) 複製一份資料給本地表單
-    // 這樣在使用者還沒按下「儲存變更」前，打字修改不會直接污染到 Pinia 的全域狀態
     profile.value = { ...authStore.profile }
   }
 })
 
+// 💡 新增：用來觸發 Modal 的專用函式
+function showMessage(msg) {
+  modalMessage.value = msg
+  if (infoModalInstance) {
+    infoModalInstance.show()
+  }
+}
+
 async function updateProfile() {
   if (!authStore.isLoggedIn) {
-    alert('請先登入後再進行修改')
+    showMessage('請先登入後再進行修改') // 替換 alert
     return
   }
 
   try {
-    // 發送更新請求給後端
     await axios.put(`${API_URL}/profile`, {
       name: profile.value.name,
       cellphoneNumber: profile.value.cellphoneNumber,
       birthday: profile.value.birthday
     }, { withCredentials: true })
     
-    alert('會員資料更新成功！')
+    showMessage('會員資料更新成功！') // 替換 alert
 
-    // 💡 2. 儲存成功後，同步更新 Pinia 裡的全域狀態
-    // 這樣一來，導覽列上的名字也會瞬間跟著變，不需要重新整理網頁！
+    // 同步更新 Pinia 全域狀態
     authStore.profile.name = profile.value.name
     authStore.profile.cellphoneNumber = profile.value.cellphoneNumber
     authStore.profile.birthday = profile.value.birthday
 
   } catch (error) {
-    alert(error.response?.data?.message || error.response?.data || '更新失敗，請稍後再試')
+    showMessage(error.response?.data?.message || error.response?.data || '更新失敗，請稍後再試') // 替換 alert
   }
 }
 </script>
 
-<style scoped> .container { min-height: 80vh; } </style>
+<style scoped> 
+.container { min-height: 80vh; } 
+</style>
