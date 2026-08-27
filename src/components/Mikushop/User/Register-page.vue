@@ -1,6 +1,7 @@
 <template>
   <div class="form-center container">
-    <form @submit.prevent="submitRegisterForm" class="row col-12 col-md-6 d-flex needs-validation" novalidate>
+    <!-- 💡 修正 1：加上 my-auto (安全置中) 與 py-5 (上下留白)，確保空間不夠時能正常滾動不被裁切 -->
+    <form @submit.prevent="submitRegisterForm" class="row col-12 col-md-6 d-flex needs-validation my-auto py-5" novalidate>
       <div class="col-12 text-center mb-3">
         <h2>會員註冊</h2>
       </div>
@@ -72,7 +73,13 @@
 </template>
 
 <style scoped>
-.form-center { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 2rem 15px; }
+.form-center { 
+  min-height: 100vh; 
+  display: flex; 
+  justify-content: center; 
+  /* 💡 修正 2：移除 align-items: center; 這是造成內容過長時上下被鎖死裁切的元凶 */
+  padding: 15px; 
+}
 .hide-validation-icon.is-valid, .hide-validation-icon.is-invalid { background-image: none !important; }
 </style>
 
@@ -115,7 +122,7 @@ const isBirthdayValid = computed(() => inputBirthday.value !== '')
 
 const isFormValid = computed(() => isEmailValid.value && isUsernameValid.value && isPasswordValid.value && isPasswordConfirmValid.value && isBirthdayValid.value)
 
-// 💡 對應後端的 RegisterController
+// 對應後端的 RegisterController
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/Register`
 
 async function submitRegisterForm() {
@@ -133,7 +140,7 @@ async function submitRegisterForm() {
         email: inputEmail.value,
         password: inputPassword.value,
         birthday: inputBirthday.value
-      } // 💡 已移除 sex
+      } 
     })
     
     if (successModal) successModal.show()
