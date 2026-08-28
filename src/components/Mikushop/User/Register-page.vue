@@ -16,7 +16,14 @@
       <!-- 會員名稱 -->
       <div class="col-12 mb-3 text-start">
         <label for="validationCustomUsername" class="form-label">會員名稱</label>
-        <input v-model.trim="inputName" type="text" class="form-control" placeholder="請填寫會員名稱" :class="{ 'is-valid': hasSubmitted && isUsernameValid, 'is-invalid': hasSubmitted && !isUsernameValid }" required />
+        <input v-model.trim="inputName" 
+        type="text" 
+        class="form-control" 
+        placeholder="請填寫會員名稱" 
+        :class="{ 'is-valid': hasSubmitted && isUsernameValid, 
+        'is-invalid': hasSubmitted && !isUsernameValid }" 
+        required 
+        autocomplete="username"/>
         <div class="invalid-feedback">會員名稱不能為空，長度必須在 1 到 40 字元之間</div>
       </div>
 
@@ -24,7 +31,13 @@
       <div class="col-12 mb-3 text-start">
         <label for="validationPassword" class="form-label">密碼</label>
         <div class="input-group has-validation">
-          <input v-model.trim="inputPassword" :type="showPassword ? 'text' : 'password'" class="form-control hide-validation-icon" :class="{ 'is-valid': hasSubmitted && isPasswordValid, 'is-invalid': hasSubmitted && !isPasswordValid }" placeholder="輸入密碼" required />
+          <input v-model.trim="inputPassword" 
+          :type="showPassword ? 'text' : 'password'" 
+          autocomplete="new-password"
+          class="form-control hide-validation-icon" 
+          :class="{ 'is-valid': hasSubmitted && isPasswordValid, 'is-invalid': hasSubmitted && !isPasswordValid }" 
+          placeholder="輸入密碼" 
+          required />
           <button class="btn btn-outline-secondary" type="button" @click="showPassword = !showPassword">{{ showPassword ? '🙈' : '👁️' }}</button>
           <div class="invalid-feedback">必須包含至少1個數字、大小寫字母和特殊字元，8-16碼</div>
         </div>
@@ -34,7 +47,13 @@
       <div class="col-12 mb-3 text-start">
         <label for="validationPasswordConfirm" class="form-label">確認密碼</label>
         <div class="input-group has-validation">
-          <input v-model.trim="inputPasswordConfirm" :type="showPasswordConfirm ? 'text' : 'password'" class="form-control hide-validation-icon" :class="{ 'is-valid': hasSubmitted && isPasswordConfirmValid, 'is-invalid': hasSubmitted && !isPasswordConfirmValid }" placeholder="確認密碼" required />
+          <input v-model.trim="inputPasswordConfirm" 
+          :type="showPasswordConfirm ? 'text' : 'password'" 
+          autocomplete="new-password"
+          class="form-control hide-validation-icon" 
+          :class="{ 'is-valid': hasSubmitted && isPasswordConfirmValid, 'is-invalid': hasSubmitted && !isPasswordConfirmValid }" 
+          placeholder="確認密碼" 
+          required />
           <button class="btn btn-outline-secondary" type="button" @click="showPasswordConfirm = !showPasswordConfirm">{{ showPasswordConfirm ? '🙈' : '👁️' }}</button>
           <div class="invalid-feedback">確認密碼不能為空，且必須與密碼一致</div>
         </div>

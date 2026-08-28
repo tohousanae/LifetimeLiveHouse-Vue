@@ -96,20 +96,22 @@
   <!-- 引入登入元件 -->
   <Login></Login>
 
-  <!-- 購物車 Modal -->
+  <!-- 購物車 modal -->
   <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">我的購物車</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <!-- 💡 加上 @click="$event.target.blur()" -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="$event.target.blur()"></button>
         </div>
         <div class="modal-body text-center py-5">
           <i class="bi bi-cart-x fs-1 text-muted mb-3 d-block"></i>
           <p class="text-muted">購物車裡面目前沒有東西喔！</p>
         </div>
         <div class="modal-footer justify-content-center border-0">
-          <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">繼續購物</button>
+          <!-- 💡 加上 @click="$event.target.blur()" -->
+          <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal" @click="$event.target.blur()">繼續購物</button>
         </div>
       </div>
     </div>

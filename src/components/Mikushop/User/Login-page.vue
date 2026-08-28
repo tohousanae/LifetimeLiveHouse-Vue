@@ -10,20 +10,22 @@
         <div class="modal-body">
           <p class="text-muted mb-3">立即登入，隨時收到獨家優惠</p>
 
-          <!-- 登入表單 (引用註冊畫面的驗證邏輯與 novalidate) -->
+          <!-- 登入表單 -->
           <form @submit.prevent="submitForm" class="needs-validation" novalidate>
             <!-- 帳號 (電子郵件) 輸入框 -->
             <div class="mb-3 text-start">
               <label for="floatingInput" class="form-label">電子郵件</label>
-              <input 
-                v-model.trim="email" 
-                type="email" 
-                class="form-control" 
-                :class="{ 'is-invalid': hasSubmitted && !isEmailValid }" 
-                id="floatingInput" 
-                placeholder="name@example.com" 
-                required 
-              />
+                <!-- 信箱輸入框 (加上 autocomplete="username") -->
+                <input 
+                  v-model.trim="email" 
+                  type="email" 
+                  autocomplete="username"
+                  class="form-control" 
+                  :class="{ 'is-invalid': hasSubmitted && !isEmailValid }" 
+                  id="floatingInput" 
+                  placeholder="name@example.com" 
+                  required 
+                />
               <div class="invalid-feedback">信箱不能為空，且格式必須正確</div>
             </div>
             
@@ -38,6 +40,7 @@
                   :class="{ 'is-invalid': hasSubmitted && !isPasswordValid }" 
                   id="floatingPassword" 
                   placeholder="請輸入密碼" 
+                  autocomplete="current-password"
                   required 
                 />
                 <button class="btn btn-outline-secondary" type="button" @click="showPassword = !showPassword">
@@ -47,7 +50,7 @@
               </div>
             </div>
 
-            <!-- 💡 後端錯誤訊息顯示區塊：使用 Bootstrap Alert 取代直接貼上原始 JSON -->
+            <!-- 錯誤訊息提示區塊 -->
             <div v-if="errorMessage" class="mb-3 text-start">
               <div class="alert alert-danger py-2 small mb-0" role="alert">
                 <i class="bi bi-exclamation-circle me-1"></i>{{ errorMessage }}
@@ -86,35 +89,32 @@
 </template>
 
 <style scoped>
-/* 避免密碼輸入框旁邊的驗證圖示跟眼球按鈕打架 */
 .hide-validation-icon.is-invalid {
   background-image: none !important;
 }
 </style>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import * as bootstrap from 'bootstrap'
 
-// 表單雙向繫結變數
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
-const hasSubmitted = ref(false) // 💡 引入註冊畫面的送出狀態旗標
+const hasSubmitted = ref(false)
 const errorMessage = ref('') 
 
 const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 
-// Modal 實例與串接旗標[cite: 10]
 let userModalInstance = null
 let successLoginModalInstance = null
 let showSuccessWhenHidden = false 
+let pendingRoute = null // 💡 關鍵新增：紀錄視窗關閉後要去哪裡
 
-// 💡 引入註冊畫面的驗證規則與 computed 邏輯[cite: 15]
 const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const isEmailValid = computed(() => email.value !== '' && regexEmail.test(email.value))
 const isPasswordValid = computed(() => password.value !== '')
@@ -125,12 +125,20 @@ onMounted(() => {
   if (userEl) {
     userModalInstance = new bootstrap.Modal(userEl)
 
+    // 💡 核心防護：監聽登入視窗「完全關閉且解鎖捲軸」的事件
     userEl.addEventListener('hidden.bs.modal', () => {
+      // 情境 A：接力開啟登入成功提示
       if (showSuccessWhenHidden) {
         showSuccessWhenHidden = false
         if (successLoginModalInstance) {
           successLoginModalInstance.show()
         }
+      } 
+      // 情境 B：接力換頁 (例如去註冊頁)
+      else if (pendingRoute) {
+        const target = pendingRoute
+        pendingRoute = null
+        router.push(target) // 確保 Bootstrap 清理完捲軸鎖定後才換頁
       }
     })
   }
@@ -138,82 +146,74 @@ onMounted(() => {
   const successEl = document.getElementById('successLoginModal')
   if (successEl) {
     successLoginModalInstance = new bootstrap.Modal(successEl)
+    
+    // 成功視窗關閉後的跳轉
+    successEl.addEventListener('hidden.bs.modal', () => {
+      if (authStore.redirectPath) {
+        const target = authStore.redirectPath
+        authStore.redirectPath = null
+        router.push(target)
+      }
+    })
   }
 })
 
-// 送出登入表單[cite: 10]
+// 💡 終極安全網：如果元件被 Vue 強制卸載，確保解除所有鎖定
+onUnmounted(() => {
+  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+  document.body.classList.remove('modal-open')
+  document.body.style.overflow = ''
+  document.body.style.paddingRight = ''
+})
+
 async function submitForm() {
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
   }
 
-  hasSubmitted.value = true // 💡 觸發驗證紅框與提示[cite: 15]
+  hasSubmitted.value = true 
   errorMessage.value = '' 
 
-  // 如果前端格式驗證不通過，直接攔截不送出 API[cite: 15]
   if (!isFormValid.value) return
 
   try {
     await authStore.login(email.value, password.value)
-    
-    showSuccessWhenHidden = true
+    showSuccessWhenHidden = true // 準備接力開啟成功框
 
     if (userModalInstance) {
-      userModalInstance.hide()
+      userModalInstance.hide() // 關閉自己，等待 hidden 事件接手
     }
-    
   } catch (error) {
-    // 💡 修正原本直接把 error.response?.data (原始 JSON) 貼上的問題，改顯示友善的提示文字[cite: 14]
     errorMessage.value = '帳號或密碼錯誤，請重新輸入'
   }
 }
 
-// 點擊登入成功 Modal 的「確定」按鈕後[cite: 10]
 function handleLoginSuccessClose() {
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
   }
-
   if (successLoginModalInstance) {
     successLoginModalInstance.hide()
   }
-
-  setTimeout(() => {
-    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
-    document.body.classList.remove('modal-open')
-    document.body.style.overflow = ''
-    document.body.style.paddingRight = ''
-
-    if (authStore.redirectPath) {
-      router.push(authStore.redirectPath)
-      authStore.redirectPath = null
-    }
-  }, 150)
 }
 
-// 點擊 Modal 內的切換連結 (如忘記密碼、註冊)
+// 點擊「註冊」或「忘記密碼」時的跳轉邏輯
 function navigateFromModal(path) {
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
   }
   
-  hasSubmitted.value = false // 切換時重置驗證狀態
+  hasSubmitted.value = false 
   errorMessage.value = ''
   email.value = ''
   password.value = ''
   showSuccessWhenHidden = false 
 
   if (userModalInstance) {
-    userModalInstance.hide()
-  }
-  
-  setTimeout(() => {
-    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
-    document.body.classList.remove('modal-open')
-    document.body.style.overflow = ''
-    document.body.style.paddingRight = ''
-
+    pendingRoute = path // 紀錄目的地
+    userModalInstance.hide() // 關閉視窗，後續換頁交給 hidden.bs.modal 處理
+  } else {
     router.push(path)
-  }, 150)
+  }
 }
 </script>
