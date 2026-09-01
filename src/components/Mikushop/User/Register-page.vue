@@ -1,6 +1,5 @@
 <template>
   <div class="form-center container">
-    <!-- 💡 修正 1：加上 my-auto (安全置中) 與 py-5 (上下留白)，確保空間不夠時能正常滾動不被裁切 -->
     <form @submit.prevent="submitRegisterForm" class="row col-12 col-md-6 d-flex needs-validation my-auto py-5" novalidate>
       <div class="col-12 text-center mb-3">
         <h2>會員註冊</h2>
@@ -20,8 +19,7 @@
         type="text" 
         class="form-control" 
         placeholder="請填寫會員名稱" 
-        :class="{ 'is-valid': hasSubmitted && isUsernameValid, 
-        'is-invalid': hasSubmitted && !isUsernameValid }" 
+        :class="{ 'is-valid': hasSubmitted && isUsernameValid, 'is-invalid': hasSubmitted && !isUsernameValid }" 
         required 
         autocomplete="username"/>
         <div class="invalid-feedback">會員名稱不能為空，長度必須在 1 到 40 字元之間</div>
@@ -29,12 +27,18 @@
 
       <!-- 密碼 -->
       <div class="col-12 mb-3 text-start">
-        <label for="validationPassword" class="form-label">密碼</label>
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <label for="validationPassword" class="form-label mb-0">密碼</label>
+          <!-- 💡 調整為自訂深綠色外框與文字的按鈕樣式 -->
+          <button type="button" class="btn btn-sm fw-bold px-2 py-1 shadow-sm custom-dark-green-btn" @click="generateStrongPassword">
+            🎲 隨機產生
+          </button>
+        </div>
         <div class="input-group has-validation">
           <input v-model.trim="inputPassword" 
           :type="showPassword ? 'text' : 'password'" 
           autocomplete="new-password"
-          class="form-control hide-validation-icon" 
+          class="form-control hide-validation-icon fw-bold" 
           :class="{ 'is-valid': hasSubmitted && isPasswordValid, 'is-invalid': hasSubmitted && !isPasswordValid }" 
           placeholder="輸入密碼" 
           required />
@@ -50,7 +54,7 @@
           <input v-model.trim="inputPasswordConfirm" 
           :type="showPasswordConfirm ? 'text' : 'password'" 
           autocomplete="new-password"
-          class="form-control hide-validation-icon" 
+          class="form-control hide-validation-icon fw-bold" 
           :class="{ 'is-valid': hasSubmitted && isPasswordConfirmValid, 'is-invalid': hasSubmitted && !isPasswordConfirmValid }" 
           placeholder="確認密碼" 
           required />
@@ -59,10 +63,10 @@
         </div>
       </div>
 
-      <!-- 生日 (已經移除性別) -->
+      <!-- 生日 -->
       <div class="col-12 mb-3 text-start">
         <label for="validationBirthday" class="form-label">生日</label>
-        <input v-model.trim="inputBirthday" type="datetime-local" class="form-control" :class="{ 'is-valid': hasSubmitted && isBirthdayValid, 'is-invalid': hasSubmitted && !isBirthdayValid }" required />
+        <input v-model.trim="inputBirthday" type="date" class="form-control" :class="{ 'is-valid': hasSubmitted && isBirthdayValid, 'is-invalid': hasSubmitted && !isBirthdayValid }" required />
         <div class="invalid-feedback">請選擇生日</div>
       </div>
 
@@ -96,10 +100,21 @@
   min-height: 100vh; 
   display: flex; 
   justify-content: center; 
-  /* 💡 修正 2：移除 align-items: center; 這是造成內容過長時上下被鎖死裁切的元凶 */
   padding: 15px; 
 }
 .hide-validation-icon.is-valid, .hide-validation-icon.is-invalid { background-image: none !important; }
+
+/* 💡 新增：自訂深綠色按鈕樣式 (外框與文字深綠，懸停時填滿深綠) */
+.custom-dark-green-btn {
+  color: #14532d;
+  border: 1px solid #14532d;
+  background-color: #f0fdf4;
+  transition: all 0.2s ease-in-out;
+}
+.custom-dark-green-btn:hover {
+  background-color: #14532d;
+  color: #ffffff;
+}
 </style>
 
 <script setup>
@@ -141,8 +156,33 @@ const isBirthdayValid = computed(() => inputBirthday.value !== '')
 
 const isFormValid = computed(() => isEmailValid.value && isUsernameValid.value && isPasswordValid.value && isPasswordConfirmValid.value && isBirthdayValid.value)
 
-// 對應後端的 RegisterController
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/Register`
+
+function generateStrongPassword() {
+  const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  const lower = 'abcdefghijklmnopqrstuvwxyz'
+  const num = '0123456789'
+  const sym = '!@#$%^&*+-='
+
+  let pwd = ''
+  pwd += upper[Math.floor(Math.random() * upper.length)]
+  pwd += lower[Math.floor(Math.random() * lower.length)]
+  pwd += num[Math.floor(Math.random() * num.length)]
+  pwd += sym[Math.floor(Math.random() * sym.length)]
+
+  const all = upper + lower + num + sym
+  for (let i = 0; i < 8; i++) {
+    pwd += all[Math.floor(Math.random() * all.length)]
+  }
+
+  pwd = pwd.split('').sort(() => 0.5 - Math.random()).join('')
+
+  inputPassword.value = pwd
+  inputPasswordConfirm.value = pwd
+
+  showPassword.value = true
+  showPasswordConfirm.value = true
+}
 
 async function submitRegisterForm() {
   hasSubmitted.value = true 
@@ -151,7 +191,7 @@ async function submitRegisterForm() {
 
   try {
     const redirectTarget = '/user-center'
-    const response = await axios({
+    await axios({
       method: 'post',
       url: `${API_URL}/postRegisterMember?redirectUrl=${encodeURIComponent(redirectTarget)}`,
       data: {
