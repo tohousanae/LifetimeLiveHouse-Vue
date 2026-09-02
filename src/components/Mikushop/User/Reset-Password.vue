@@ -55,7 +55,8 @@ const router = useRouter()
 // 💡 對應後端的 ForgetPasswordController
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/ForgetPassword`
 
-const token = route.params.token // 依據你的 router 設定是 /:token
+// 用 query 抓取 ?token= 後面的參數
+const token = route.query.token
 const isValidating = ref(true)
 const isTokenValid = ref(false)
 
