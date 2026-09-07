@@ -120,34 +120,33 @@ const isEmailValid = computed(() => email.value !== '' && regexEmail.test(email.
 const isPasswordValid = computed(() => password.value !== '')
 const isFormValid = computed(() => isEmailValid.value && isPasswordValid.value)
 
+// Login-page.vue (僅需修改 onMounted 區塊)
 onMounted(() => {
   const userEl = document.getElementById('userModal')
   if (userEl) {
-    userModalInstance = new bootstrap.Modal(userEl)
+    // 💡 修正：改用 getOrCreateInstance，避免與 index.js 產生的實例衝突導致畫面凍結
+    userModalInstance = bootstrap.Modal.getOrCreateInstance(userEl)
 
-    // 💡 核心防護：監聽登入視窗「完全關閉且解鎖捲軸」的事件
     userEl.addEventListener('hidden.bs.modal', () => {
-      // 情境 A：接力開啟登入成功提示
       if (showSuccessWhenHidden) {
         showSuccessWhenHidden = false
         if (successLoginModalInstance) {
           successLoginModalInstance.show()
         }
       } 
-      // 情境 B：接力換頁 (例如去註冊頁)
       else if (pendingRoute) {
         const target = pendingRoute
         pendingRoute = null
-        router.push(target) // 確保 Bootstrap 清理完捲軸鎖定後才換頁
+        router.push(target) 
       }
     })
   }
 
   const successEl = document.getElementById('successLoginModal')
   if (successEl) {
-    successLoginModalInstance = new bootstrap.Modal(successEl)
+    // 💡 修正：同樣改用 getOrCreateInstance 以確保安全
+    successLoginModalInstance = bootstrap.Modal.getOrCreateInstance(successEl)
     
-    // 成功視窗關閉後的跳轉
     successEl.addEventListener('hidden.bs.modal', () => {
       if (authStore.redirectPath) {
         const target = authStore.redirectPath

@@ -36,7 +36,7 @@ const router = createRouter({
       component: Forgetpassword
     },
     {
-      path: `/:token`,
+      path: `/reset-password`,
       name: 'resetpassword',
       component: ResetPasswordForm
     },
