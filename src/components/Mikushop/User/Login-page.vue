@@ -1,6 +1,7 @@
 <template>
   <!-- ================= 1. 會員登入互動 Modal ================= -->
-  <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <!-- 修正後：移除 static，讓使用者點擊 Modal 外部空白處時可以自動隱藏並回到首頁瀏覽 -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -96,7 +97,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import * as bootstrap from 'bootstrap'
 
@@ -108,7 +109,6 @@ const errorMessage = ref('')
 
 const authStore = useAuthStore()
 const router = useRouter()
-const route = useRoute()
 
 let userModalInstance = null
 let successLoginModalInstance = null
@@ -120,14 +120,22 @@ const isEmailValid = computed(() => email.value !== '' && regexEmail.test(email.
 const isPasswordValid = computed(() => password.value !== '')
 const isFormValid = computed(() => isEmailValid.value && isPasswordValid.value)
 
-// Login-page.vue (僅需修改 onMounted 區塊)
+// 💡 終極清除函數：物理消滅 Bootstrap 殘留的鎖定
+function forceCleanupBackdrop() {
+  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+  document.body.classList.remove('modal-open')
+  document.body.style.overflow = ''
+  document.body.style.paddingRight = ''
+}
+
 onMounted(() => {
   const userEl = document.getElementById('userModal')
   if (userEl) {
-    // 💡 修正：改用 getOrCreateInstance，避免與 index.js 產生的實例衝突導致畫面凍結
     userModalInstance = bootstrap.Modal.getOrCreateInstance(userEl)
 
     userEl.addEventListener('hidden.bs.modal', () => {
+      forceCleanupBackdrop() // 💡 第一時間強制清除背景
+      
       if (showSuccessWhenHidden) {
         showSuccessWhenHidden = false
         if (successLoginModalInstance) {
@@ -144,10 +152,11 @@ onMounted(() => {
 
   const successEl = document.getElementById('successLoginModal')
   if (successEl) {
-    // 💡 修正：同樣改用 getOrCreateInstance 以確保安全
     successLoginModalInstance = bootstrap.Modal.getOrCreateInstance(successEl)
     
     successEl.addEventListener('hidden.bs.modal', () => {
+      forceCleanupBackdrop() // 💡 第一時間強制清除背景
+      
       if (authStore.redirectPath) {
         const target = authStore.redirectPath
         authStore.redirectPath = null
@@ -157,18 +166,12 @@ onMounted(() => {
   }
 })
 
-// 💡 終極安全網：如果元件被 Vue 強制卸載，確保解除所有鎖定
 onUnmounted(() => {
-  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
-  document.body.classList.remove('modal-open')
-  document.body.style.overflow = ''
-  document.body.style.paddingRight = ''
+  forceCleanupBackdrop()
 })
 
 async function submitForm() {
-  if (document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur()
-  }
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
 
   hasSubmitted.value = true 
   errorMessage.value = '' 
@@ -177,10 +180,10 @@ async function submitForm() {
 
   try {
     await authStore.login(email.value, password.value)
-    showSuccessWhenHidden = true // 準備接力開啟成功框
-
+    showSuccessWhenHidden = true 
+    
     if (userModalInstance) {
-      userModalInstance.hide() // 關閉自己，等待 hidden 事件接手
+      userModalInstance.hide() 
     }
   } catch (error) {
     errorMessage.value = '帳號或密碼錯誤，請重新輸入'
@@ -188,19 +191,14 @@ async function submitForm() {
 }
 
 function handleLoginSuccessClose() {
-  if (document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur()
-  }
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
   if (successLoginModalInstance) {
     successLoginModalInstance.hide()
   }
 }
 
-// 點擊「註冊」或「忘記密碼」時的跳轉邏輯
 function navigateFromModal(path) {
-  if (document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur()
-  }
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
   
   hasSubmitted.value = false 
   errorMessage.value = ''
@@ -209,9 +207,10 @@ function navigateFromModal(path) {
   showSuccessWhenHidden = false 
 
   if (userModalInstance) {
-    pendingRoute = path // 紀錄目的地
-    userModalInstance.hide() // 關閉視窗，後續換頁交給 hidden.bs.modal 處理
+    pendingRoute = path 
+    userModalInstance.hide() 
   } else {
+    forceCleanupBackdrop() // 💡 確保沒有 Modal 實例時也先清空再跳
     router.push(path)
   }
 }

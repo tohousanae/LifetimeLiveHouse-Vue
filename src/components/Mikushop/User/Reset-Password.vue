@@ -18,7 +18,6 @@
         <h2>重設密碼</h2>
       </div>
 
-      <!-- 💡 新密碼區塊 (加入隨機產生、顯示隱藏與驗證) -->
       <div class="col-12 mb-3 text-start">
         <div class="d-flex justify-content-between align-items-center mb-1">
           <label class="form-label mb-0">新密碼</label>
@@ -41,7 +40,6 @@
         </div>
       </div>
 
-      <!-- 💡 確認新密碼區塊 -->
       <div class="col-12 mb-4 text-start">
         <label class="form-label">確認新密碼</label>
         <div class="input-group has-validation">
@@ -59,15 +57,31 @@
         </div>
       </div>
 
-      <div v-if="errorMessage" class="col-12 mb-3">
-        <div class="alert alert-danger">{{ errorMessage }}</div>
-      </div>
-
-      <div class="col-12 mb-3 d-flex gap-2">
+      <div class="col-12 mb-3 d-flex gap-2 mt-2">
         <RouterLink to="/" class="btn btn-outline-secondary w-50">回首頁</RouterLink>
         <button class="btn btn-primary w-50" type="submit">確認重設</button>
       </div>
     </form>
+
+    <!-- 💡 新增：重設密碼結果提示 Modal -->
+    <div class="modal fade" id="resetResultModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header bg-light">
+            <h5 class="modal-title fs-6">系統提示</h5>
+          </div>
+          <div class="modal-body text-center py-4">
+            <i v-if="isSuccess" class="bi bi-check-circle-fill text-success fs-1 mb-2 d-block"></i>
+            <i v-else class="bi bi-x-circle-fill text-danger fs-1 mb-2 d-block"></i>
+            <p class="mb-0 fw-bold">{{ modalMessage }}</p>
+          </div>
+          <div class="modal-footer justify-content-center border-0">
+            <button type="button" class="btn btn-primary px-4" @click="handleModalClose">確定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -75,7 +89,6 @@
 .form-center { min-height: 100vh; display: flex; justify-content: center; align-items: center; }
 .hide-validation-icon.is-valid, .hide-validation-icon.is-invalid { background-image: none !important; }
 
-/* 自訂深綠色按鈕樣式 */
 .custom-dark-green-btn {
   color: #14532d;
   border: 1px solid #14532d;
@@ -90,12 +103,12 @@
 
 <script setup>
 import axios from 'axios'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import * as bootstrap from 'bootstrap'
 
 const route = useRoute()
 const router = useRouter()
-
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/ForgetPassword`
 
 const token = route.query.token
@@ -104,19 +117,27 @@ const isTokenValid = ref(false)
 
 const newPassword = ref('')
 const confirmPassword = ref('')
-const errorMessage = ref('')
 const hasSubmitted = ref(false)
 
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
-// 💡 密碼驗證邏輯
+// Modal 狀態控制
+const isSuccess = ref(false)
+const modalMessage = ref('')
+let resultModalInstance = null
+
 const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 const isPasswordValid = computed(() => newPassword.value !== '' && regexPassword.test(newPassword.value))
 const isConfirmPasswordValid = computed(() => confirmPassword.value !== '' && confirmPassword.value === newPassword.value)
 const isFormValid = computed(() => isPasswordValid.value && isConfirmPasswordValid.value)
 
 onMounted(async () => {
+  const modalEl = document.getElementById('resetResultModal')
+  if (modalEl) {
+    resultModalInstance = bootstrap.Modal.getOrCreateInstance(modalEl)
+  }
+
   if (!token) {
     isValidating.value = false
     return
@@ -132,7 +153,18 @@ onMounted(async () => {
   }
 })
 
-// 💡 隨機產生強式密碼
+// 💡 終極清除函數：確保離開組件時不會殘留灰底
+function forceCleanupBackdrop() {
+  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+  document.body.classList.remove('modal-open')
+  document.body.style.overflow = ''
+  document.body.style.paddingRight = ''
+}
+
+onUnmounted(() => {
+  forceCleanupBackdrop()
+})
+
 function generateStrongPassword() {
   const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   const lower = 'abcdefghijklmnopqrstuvwxyz'
@@ -154,16 +186,12 @@ function generateStrongPassword() {
 
   newPassword.value = pwd
   confirmPassword.value = pwd
-
   showPassword.value = true
   showConfirmPassword.value = true
 }
 
 async function submitResetPassword() {
   hasSubmitted.value = true
-  errorMessage.value = ''
-
-  // 💡 阻擋前端驗證失敗的請求
   if (!isFormValid.value) return
 
   try {
@@ -173,10 +201,25 @@ async function submitResetPassword() {
       confirmPassword: confirmPassword.value
     })
     
-    alert(response.data.message)
-    router.push('/')
+    isSuccess.value = true
+    modalMessage.value = response.data.message || '密碼重設成功！'
+    resultModalInstance?.show()
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '重設失敗'
+    isSuccess.value = false
+    modalMessage.value = error.response?.data?.message || '重設失敗，請確認連結是否過期。'
+    resultModalInstance?.show()
   }
+}
+
+function handleModalClose() {
+  resultModalInstance?.hide()
+  
+  // 給予 Bootstrap 關閉動畫 300ms 緩衝，再進行強制清除與跳轉
+  setTimeout(() => {
+    forceCleanupBackdrop()
+    if (isSuccess.value) {
+      router.push('/')
+    }
+  }, 300)
 }
 </script>

@@ -59,7 +59,7 @@
           
           <!-- 💡 修正按鈕排版：使用 flex-column 與 flex-sm-row 搭配 gap-3，確保直向與橫向都有完美間距 -->
           <div class="col-12 mt-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-            <small class="text-muted mb-3 mb-md-0">加入時間：{{ new Date(profile.createdDate).toLocaleDateString() }}</small>
+            <small class="text-muted mb-3 mb-md-0">加入時間：{{ formattedCreatedDate }}</small>
             <div class="d-flex flex-column flex-sm-row gap-3 w-100 justify-content-sm-end" style="max-width: 400px;">
               <RouterLink to="/" class="btn btn-outline-secondary px-4 w-100">回首頁</RouterLink>
               <button type="submit" class="btn btn-primary px-4 w-100">儲存變更</button>
@@ -91,7 +91,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+// 💡 1. 記得補上 computed 的引入
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import * as bootstrap from 'bootstrap' // 💡 確保引入 Bootstrap 以操作 Modal
@@ -126,6 +127,31 @@ onMounted(() => {
   if (authStore.isLoggedIn) {
     profile.value = { ...authStore.profile }
   }
+})
+
+// 💡 2. 新增：自動轉換時區的計算屬性
+const formattedCreatedDate = computed(() => {
+  if (!profile.value.createdDate) return ''
+  
+  // 防呆機制：如果 .NET 傳來的字串沒有包含時區資訊 (Z)，我們強制標記它為 UTC
+  let dateStr = profile.value.createdDate
+  if (!dateStr.endsWith('Z') && !dateStr.includes('+')) {
+    dateStr += 'Z'
+  }
+
+  const d = new Date(dateStr)
+  
+  // 使用 toLocaleString 自動轉換為使用者裝置所在的當地時間
+  // undefined 代表自動偵測使用者的瀏覽器語系 (例如台灣人看到 YYYY/MM/DD，美國人看到 MM/DD/YYYY)
+  return d.toLocaleString(undefined, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false // 採用 24 小時制
+  })
 })
 
 // 💡 新增：用來觸發 Modal 的專用函式

@@ -4,16 +4,10 @@
     <div class="container">
       <!-- 網站 Logo 連結 -->
       <RouterLink class="navbar-brand" to="/">LivetimeLivehouse</RouterLink>
-      
+
       <!-- 手機版漢堡選單按鈕 -->
-      <button
-        class="navbar-toggler"
-        type="button"
-        @click="toggleNavbar"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+      <button class="navbar-toggler" type="button" @click="toggleNavbar" aria-controls="navbarSupportedContent"
+        aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -37,7 +31,7 @@
             <RouterLink class="nav-link" to="/">聯絡我們</RouterLink>
           </li>
         </ul>
-        
+
         <!-- 頂部搜尋列 -->
         <form class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
@@ -46,25 +40,30 @@
 
         <!-- ================= 2. 會員專區與購物車 ================= -->
         <div class="d-flex align-items-center mt-3 mt-lg-0 ms-lg-3">
-          
+
           <!-- 狀態 A：未登入 (顯示頭像與「登入/註冊」文字，手機版自動隱藏文字)[cite: 9] -->
-          <a v-if="!authStore.isLoggedIn" href="javascript:;" class="text-decoration-none d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#userModal">
+          <!-- 修正後：改用點擊事件觸發，確保每次都靈敏開啟 -->
+          <a v-if="!authStore.isLoggedIn" href="javascript:;" class="text-decoration-none d-flex align-items-center"
+            @click="openLoginModal">
             <i class="bi bi-person-circle fs-3"></i>
             <span class="ms-2 fw-bold d-none d-lg-block">登入 / 註冊</span>
           </a>
 
           <!-- 狀態 B：已登入 (顯示打勾頭像與會員名稱)[cite: 9] -->
           <div v-else class="dropdown" ref="dropdownContainer">
-            <a href="javascript:;" class="text-decoration-none dropdown-toggle d-flex align-items-center" id="userDropdown" @click.prevent="toggleDropdown">
+            <a href="javascript:;" class="text-decoration-none dropdown-toggle d-flex align-items-center"
+              id="userDropdown" @click.prevent="toggleDropdown">
               <i class="bi bi-person-check-fill fs-3"></i>
               <!-- 超長名字防破版處理 (文字截斷) -->
-              <span v-if="authStore.profile.name" class="ms-2 fw-bold d-inline-block text-truncate" style="max-width: 120px; vertical-align: bottom;">
+              <span v-if="authStore.profile.name" class="ms-2 fw-bold d-inline-block text-truncate"
+                style="max-width: 120px; vertical-align: bottom;">
                 {{ authStore.profile.name }}
               </span>
             </a>
-            
+
             <!-- 會員下拉選單 (包含點數、儲值金與功能選單)[cite: 9] -->
-            <ul class="dropdown-menu dropdown-menu-lg-end shadow-sm mt-2 p-2" :class="{ show: isDropdownOpen }" aria-labelledby="userDropdown" style="min-width: 220px;">
+            <ul class="dropdown-menu dropdown-menu-lg-end shadow-sm mt-2 p-2" :class="{ show: isDropdownOpen }"
+              aria-labelledby="userDropdown" style="min-width: 220px;">
               <!-- 點數與儲值金摘要小卡 -->
               <li class="px-3 py-2 bg-light rounded mb-2">
                 <div class="d-flex justify-content-between align-items-center mb-1">
@@ -77,9 +76,15 @@
                 </div>
               </li>
 
-              <li><RouterLink class="dropdown-item rounded py-2" to="/user-manage" @click="isDropdownOpen = false"><i class="bi bi-card-list me-2"></i>會員中心</RouterLink></li>
-              <li><hr class="dropdown-divider my-1"></li>
-              <li><a class="dropdown-item text-danger rounded py-2" href="javascript:;" @click="confirmLogout"><i class="bi bi-box-arrow-right me-2"></i>登出</a></li>
+              <li>
+                <RouterLink class="dropdown-item rounded py-2" to="/user-manage" @click="isDropdownOpen = false"><i
+                    class="bi bi-card-list me-2"></i>會員中心</RouterLink>
+              </li>
+              <li>
+                <hr class="dropdown-divider my-1">
+              </li>
+              <li><a class="dropdown-item text-danger rounded py-2" href="javascript:;" @click="confirmLogout"><i
+                    class="bi bi-box-arrow-right me-2"></i>登出</a></li>
             </ul>
           </div>
 
@@ -103,7 +108,8 @@
         <div class="modal-header">
           <h5 class="modal-title">我的購物車</h5>
           <!-- 💡 加上 @click="$event.target.blur()" -->
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="$event.target.blur()"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            @click="$event.target.blur()"></button>
         </div>
         <div class="modal-body text-center py-5">
           <i class="bi bi-cart-x fs-1 text-muted mb-3 d-block"></i>
@@ -111,7 +117,8 @@
         </div>
         <div class="modal-footer justify-content-center border-0">
           <!-- 💡 加上 @click="$event.target.blur()" -->
-          <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal" @click="$event.target.blur()">繼續購物</button>
+          <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal"
+            @click="$event.target.blur()">繼續購物</button>
         </div>
       </div>
     </div>
@@ -123,13 +130,15 @@
       <div class="modal-content">
         <div class="modal-header bg-light">
           <h5 class="modal-title fs-6">系統確認</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="$event.target.blur()"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            @click="$event.target.blur()"></button>
         </div>
         <div class="modal-body text-center py-4">
           <p class="mb-0 fw-bold">確定要登出系統嗎？</p>
         </div>
         <div class="modal-footer justify-content-center border-0 gap-2">
-          <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal" @click="$event.target.blur()">取消</button>
+          <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal"
+            @click="$event.target.blur()">取消</button>
           <button type="button" class="btn btn-danger px-3" @click="executeLogout">確定登出</button>
         </div>
       </div>
@@ -173,6 +182,16 @@ const isDropdownOpen = ref(false)
 let confirmLogoutModalInstance = null
 let successLogoutModalInstance = null
 let showSuccessWhenHidden = false // 💡 關鍵旗標：控制確認框完全關閉後才接力彈出成功框[cite: 9]
+
+// 點擊開啟登入 Modal 的專用函式
+function openLoginModal() {
+  forceCloseAll()
+  const modalEl = document.getElementById('userModal')
+  if (modalEl) {
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl)
+    modal.show()
+  }
+}
 
 // 切換會員下拉選單
 function toggleDropdown() {

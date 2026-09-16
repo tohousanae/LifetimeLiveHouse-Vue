@@ -72,25 +72,21 @@ router.beforeEach(async (to, from, next) => {
     // 1. 記住他想去的網址
     authStore.redirectPath = to.fullPath 
     
-    // 2. 💡 修正白畫面：判斷是否有「上一頁」
+    // 2. 判斷是否有「上一頁」
     if (from.name == null) {
-      // 如果是直接貼網址進來，沒有上一頁，就導向首頁當背景
       next('/') 
     } else {
-      // 如果是從首頁或其他頁點過來的，取消跳轉留在原畫面
       next(false) 
     }
     
-    // 3. 抓取畫面上的 Modal 並把它彈出來 (加一點點延遲確保 DOM 已渲染)
+    // 3. 💡 關鍵修正：完全移除 import().then() 的延遲，直接同步執行，並將延遲縮短至 10ms
     setTimeout(() => {
       const modalEl = document.getElementById('userModal')
       if (modalEl) {
-        import('bootstrap').then(({ Modal }) => {
-          const modal = Modal.getOrCreateInstance(modalEl)
-          modal.show()
-        })
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl)
+        modal.show()
       }
-    }, 100)
+    }, 10) 
   } else {
     next()
   }
