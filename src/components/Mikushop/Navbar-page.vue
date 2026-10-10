@@ -41,7 +41,7 @@
         <!-- ================= 2. 會員專區與購物車 ================= -->
         <div class="d-flex align-items-center mt-3 mt-lg-0 ms-lg-3">
 
-          <!-- 狀態 A：未登入 (顯示頭像與「登入/註冊」文字，手機版自動隱藏文字)[cite: 9] -->
+          <!-- 狀態 A：未登入 (顯示頭像與「登入/註冊」文字，手機版自動隱藏文字) -->
           <!-- 修正後：改用點擊事件觸發，確保每次都靈敏開啟 -->
           <a v-if="!authStore.isLoggedIn" href="javascript:;" class="text-decoration-none d-flex align-items-center"
             @click="openLoginModal">
@@ -49,7 +49,7 @@
             <span class="ms-2 fw-bold d-none d-lg-block">登入 / 註冊</span>
           </a>
 
-          <!-- 狀態 B：已登入 (顯示打勾頭像與會員名稱)[cite: 9] -->
+          <!-- 狀態 B：已登入 (顯示打勾頭像與會員名稱) -->
           <div v-else class="dropdown" ref="dropdownContainer">
             <a href="javascript:;" class="text-decoration-none dropdown-toggle d-flex align-items-center"
               id="userDropdown" @click.prevent="toggleDropdown">
@@ -61,7 +61,7 @@
               </span>
             </a>
 
-            <!-- 會員下拉選單 (包含點數、儲值金與功能選單)[cite: 9] -->
+            <!-- 會員下拉選單 (包含點數、儲值金與功能選單) -->
             <ul class="dropdown-menu dropdown-menu-lg-end shadow-sm mt-2 p-2" :class="{ show: isDropdownOpen }"
               aria-labelledby="userDropdown" style="min-width: 220px;">
               <!-- 點數與儲值金摘要小卡 -->
@@ -124,7 +124,7 @@
     </div>
   </div>
 
-  <!-- Modal A：確認是否登出的詢問視窗[cite: 9] -->
+  <!-- Modal A：確認是否登出的詢問視窗 -->
   <div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
@@ -145,7 +145,7 @@
     </div>
   </div>
 
-  <!-- Modal B：獨立的「登出成功」提示視窗[cite: 9] -->
+  <!-- Modal B：獨立的「登出成功」提示視窗 (現已改為動態共用提示視窗) -->
   <div class="modal fade" id="successLogoutModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
@@ -153,11 +153,13 @@
           <h5 class="modal-title fs-6">系統提示</h5>
         </div>
         <div class="modal-body text-center py-4">
-          <i class="bi bi-check-circle-fill text-success fs-1 mb-2 d-block"></i>
-          <p class="mb-0 fw-bold">已成功登出！</p>
+          <i class="bi fs-1 mb-2 d-block" 
+             :class="isLogoutSuccess ? 'bi-check-circle-fill text-success' : 'bi-exclamation-circle-fill text-danger'"></i>
+          <p class="mb-0 fw-bold">{{ logoutMessage }}</p>
         </div>
         <div class="modal-footer justify-content-center border-0">
-          <button type="button" class="btn btn-primary px-4" @click="handleSuccessModalClose">確定</button>
+          <button type="button" class="btn px-4" :class="isLogoutSuccess ? 'btn-primary' : 'btn-secondary'" 
+                  @click="handleSuccessModalClose">確定</button>
         </div>
       </div>
     </div>
@@ -181,7 +183,11 @@ const isDropdownOpen = ref(false)
 // Modal 實例與控制旗標
 let confirmLogoutModalInstance = null
 let successLogoutModalInstance = null
-let showSuccessWhenHidden = false // 💡 關鍵旗標：控制確認框完全關閉後才接力彈出成功框[cite: 9]
+let showSuccessWhenHidden = false // 💡 關鍵旗標：控制確認框完全關閉後才接力彈出成功框
+
+// 新增：用來動態控制提示框狀態的變數
+const isLogoutSuccess = ref(true)
+const logoutMessage = ref('已成功登出！')
 
 // 點擊開啟登入 Modal 的專用函式
 function openLoginModal() {
@@ -243,12 +249,12 @@ function handleDocumentClick(event) {
 onMounted(() => {
   document.addEventListener('click', handleDocumentClick)
 
-  // 1. 初始化確認登出 Modal[cite: 9]
+  // 1. 初始化確認登出 Modal
   const confirmEl = document.getElementById('confirmLogoutModal')
   if (confirmEl) {
     confirmLogoutModalInstance = new bootstrap.Modal(confirmEl)
 
-    // 💡 核心防護：利用 hidden 事件，等確認框黑幕完全退場後，才安全開啟成功提示框[cite: 9]
+    // 💡 核心防護：利用 hidden 事件，等確認框黑幕完全退場後，才安全開啟成功提示框
     confirmEl.addEventListener('hidden.bs.modal', () => {
       if (showSuccessWhenHidden) {
         showSuccessWhenHidden = false
@@ -259,7 +265,7 @@ onMounted(() => {
     })
   }
 
-  // 2. 初始化登出成功 Modal[cite: 9]
+  // 2. 初始化登出成功 Modal
   const successEl = document.getElementById('successLogoutModal')
   if (successEl) {
     successLogoutModalInstance = new bootstrap.Modal(successEl)
@@ -271,7 +277,8 @@ onMounted(() => {
       document.body.style.overflow = ''
       document.body.style.paddingRight = ''
 
-      if (router.currentRoute.value.meta.requiresAuth) {
+      // 💡 只有登出「成功」且當前頁面需要權限時，才強制導回首頁
+      if (isLogoutSuccess.value && router.currentRoute.value.meta.requiresAuth) {
         router.push('/')
       }
     })
@@ -288,7 +295,7 @@ watch(() => route.path, () => {
   forceCloseAll()
 })
 
-// 點擊登出按鈕：收合選單並開啟確認 Modal[cite: 9]
+// 點擊登出按鈕：收合選單並開啟確認 Modal
 function confirmLogout() {
   forceCloseAll()
   showSuccessWhenHidden = false
@@ -297,7 +304,7 @@ function confirmLogout() {
   }
 }
 
-// 執行登出動作：呼叫 API 並設定接力旗標，然後關閉確認框[cite: 9]
+// 執行登出動作：呼叫 API 並設定接力旗標，然後關閉確認框
 async function executeLogout() {
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
@@ -305,20 +312,25 @@ async function executeLogout() {
 
   try {
     await authStore.logout()
+    // 登出成功，設定狀態與訊息
+    isLogoutSuccess.value = true
+    logoutMessage.value = '已成功登出！'
   } catch (error) {
-    console.error('登出發生錯誤', error)
+    // 登出失敗，設定狀態與錯誤訊息（取代原本的 console.error）
+    isLogoutSuccess.value = false
+    logoutMessage.value = error.response?.data?.message || '登出失敗，請稍後再試。'
   }
 
   // 設定準備開啟成功框的旗標
   showSuccessWhenHidden = true
 
-  // 隱藏確認 Modal（會觸發上方 hidden 事件）[cite: 9]
+  // 隱藏確認 Modal（會觸發上方 hidden 事件）
   if (confirmLogoutModalInstance) {
     confirmLogoutModalInstance.hide()
   }
 }
 
-// 點擊登出成功 Modal 的「確定」按鈕後[cite: 9]
+// 點擊登出成功 Modal 的「確定」按鈕後
 function handleSuccessModalClose() {
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
