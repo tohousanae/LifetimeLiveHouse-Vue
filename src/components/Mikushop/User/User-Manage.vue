@@ -23,18 +23,36 @@
     </div>
 
     <!-- 驗證狀態區塊 -->
-    <div class="row mb-4">
-      <div class="col-md-6 mb-3">
-        <div class="alert mb-0" :class="profile.isEmailVerified ? 'alert-success' : 'alert-warning'">
-          信箱驗證：<strong>{{ profile.isEmailVerified ? '已驗證 ✔️' : '尚未驗證 ❌' }}</strong>
-        </div>
-      </div>
-      <div class="col-md-6 mb-3">
-        <div class="alert mb-0" :class="profile.isPhoneVerified ? 'alert-success' : 'alert-warning'">
-          手機驗證：<strong>{{ profile.isPhoneVerified ? '已驗證 ✔️' : '尚未驗證 ❌' }}</strong>
-        </div>
+<div class="row mb-4">
+  <!-- 信箱驗證 -->
+  <div class="col-md-6 mb-3">
+    <div class="alert h-100 mb-0 d-flex flex-column justify-content-center" :class="profile.isEmailVerified ? 'alert-success' : 'alert-warning'">
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <div>信箱驗證：<strong>{{ profile.isEmailVerified ? '已驗證 ✔️' : '尚未驗證 ❌' }}</strong></div>
+        <button v-if="!profile.isEmailVerified" @click="sendEmailVerify" :disabled="emailCooldown > 0 || isSending" class="btn btn-sm btn-outline-dark bg-white">
+          {{ emailCooldown > 0 ? `請稍後 (${emailCooldown}s)` : '發送驗證信' }}
+        </button>
       </div>
     </div>
+  </div>
+
+  <!-- 手機驗證 -->
+  <div class="col-md-6 mb-3">
+    <div class="alert h-100 mb-0 d-flex flex-column justify-content-center" :class="profile.isPhoneVerified ? 'alert-success' : 'alert-warning'">
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <div>手機驗證：<strong>{{ profile.isPhoneVerified ? '已驗證 ✔️' : '尚未驗證 ❌' }}</strong></div>
+        <button v-if="!profile.isPhoneVerified" @click="sendPhoneVerify" :disabled="phoneCooldown > 0 || isSending" class="btn btn-sm btn-outline-dark bg-white">
+          {{ phoneCooldown > 0 ? `請稍後 (${phoneCooldown}s)` : '發送驗證碼' }}
+        </button>
+      </div>
+      <!-- 點擊發送後展開的輸入框 -->
+      <div v-if="showPhoneInput && !profile.isPhoneVerified" class="mt-3 input-group input-group-sm animate__animated animate__fadeIn">
+        <input type="text" v-model="phoneCode" class="form-control" placeholder="請輸入 6 位數簡訊驗證碼" maxlength="6" />
+        <button @click="verifyPhoneCode" class="btn btn-primary px-3" :disabled="!phoneCode || isSending">確認</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <!-- 會員資料修改表單 -->
     <div class="card shadow-sm">
@@ -96,6 +114,84 @@ import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import * as bootstrap from 'bootstrap' // 💡 確保引入 Bootstrap 以操作 Modal
+
+const isSending = ref(false)
+
+// 冷卻時間變數
+const emailCooldown = ref(0)
+const phoneCooldown = ref(0)
+
+// 手機驗證輸入框控制
+const showPhoneInput = ref(false)
+const phoneCode = ref('')
+
+// 啟動冷卻倒數的共用工具
+function startCooldown(type) {
+  let timer = 60
+  if (type === 'email') emailCooldown.value = timer
+  if (type === 'phone') phoneCooldown.value = timer
+
+  const interval = setInterval(() => {
+    timer--
+    if (type === 'email') emailCooldown.value = timer
+    if (type === 'phone') phoneCooldown.value = timer
+
+    if (timer <= 0) clearInterval(interval)
+  }, 1000)
+}
+
+// 📧 發送註冊驗證信
+async function sendEmailVerify() {
+  if (isSending.value) return
+  isSending.value = true
+  try {
+    const res = await axios.post(`${API_URL}/send-email-verification`, {}, { withCredentials: true })
+    showMessage(res.data.message)
+    startCooldown('email')
+  } catch (error) {
+    showMessage(error.response?.data?.message || '發送失敗，請確認資料')
+  } finally {
+    isSending.value = false
+  }
+}
+
+// 📱 發送手機驗證碼
+async function sendPhoneVerify() {
+  if (!profile.value.cellphoneNumber) {
+    showMessage('請先在下方表單填寫您的手機號碼，並點擊「儲存變更」後再發送驗證碼！')
+    return
+  }
+  
+  if (isSending.value) return
+  isSending.value = true
+  try {
+    const res = await axios.post(`${API_URL}/send-phone-verification`, {}, { withCredentials: true })
+    showMessage(res.data.message)
+    startCooldown('phone')
+    showPhoneInput.value = true // 展開輸入框
+  } catch (error) {
+    showMessage(error.response?.data?.message || '發送失敗，請確認手機號碼是否正確')
+  } finally {
+    isSending.value = false
+  }
+}
+
+// 📱 送出手機驗證碼
+async function verifyPhoneCode() {
+  if (!phoneCode.value || isSending.value) return
+  isSending.value = true
+  try {
+    const res = await axios.post(`${API_URL}/verify-phone-code`, { code: phoneCode.value }, { withCredentials: true })
+    showMessage(res.data) // 後端回傳的是純字串 "手機驗證成功！"
+    profile.value.isPhoneVerified = true // 畫面即時更新為已驗證
+    authStore.profile.isPhoneVerified = true
+    showPhoneInput.value = false
+  } catch (error) {
+    showMessage(error.response?.data?.message || error.response?.data || '驗證碼錯誤或已過期')
+  } finally {
+    isSending.value = false
+  }
+}
 
 const authStore = useAuthStore()
 const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
