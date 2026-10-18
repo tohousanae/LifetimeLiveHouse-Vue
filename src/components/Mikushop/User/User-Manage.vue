@@ -109,11 +109,22 @@
 </template>
 
 <script setup>
-// 💡 1. 記得補上 computed 的引入
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
-import * as bootstrap from 'bootstrap' // 💡 確保引入 Bootstrap 以操作 Modal
+import * as bootstrap from 'bootstrap'
+
+const authStore = useAuthStore()
+const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
+
+const profile = ref({
+  email: '', name: '', cellphoneNumber: '', birthday: '',
+  cash: 0, memberPoint: 0, createdDate: '',
+  isEmailVerified: false, isPhoneVerified: false
+})
+
+const modalMessage = ref('')
+let infoModalInstance = null
 
 const isSending = ref(false)
 
@@ -121,35 +132,69 @@ const isSending = ref(false)
 const emailCooldown = ref(0)
 const phoneCooldown = ref(0)
 
-// 手機驗證輸入框控制
+// 獨立的計時器實例，避免信箱與手機互相干擾
+let emailTimerInterval = null
+let phoneTimerInterval = null
+
 const showPhoneInput = ref(false)
 const phoneCode = ref('')
 
-// 啟動冷卻倒數的共用工具
-function startCooldown(type) {
-  let timer = 60
-  if (type === 'email') emailCooldown.value = timer
-  if (type === 'phone') phoneCooldown.value = timer
+// 💡 啟動冷卻倒數 (支援寫入 localStorage)
+function startCooldown(type, secondsLeft = 60) {
+  const storageKey = type === 'email' ? 'emailCooldownExpiry' : 'phoneCooldownExpiry'
+  const expiryTime = Date.now() + secondsLeft * 1000
+  localStorage.setItem(storageKey, expiryTime)
 
-  const interval = setInterval(() => {
-    timer--
-    if (type === 'email') emailCooldown.value = timer
-    if (type === 'phone') phoneCooldown.value = timer
+  if (type === 'email') {
+    emailCooldown.value = secondsLeft
+    if (emailTimerInterval) clearInterval(emailTimerInterval)
+    emailTimerInterval = setInterval(() => checkCooldown(type, storageKey), 1000)
+  } else {
+    phoneCooldown.value = secondsLeft
+    if (phoneTimerInterval) clearInterval(phoneTimerInterval)
+    phoneTimerInterval = setInterval(() => checkCooldown(type, storageKey), 1000)
+  }
+}
 
-    if (timer <= 0) clearInterval(interval)
-  }, 1000)
+// 💡 檢查與更新冷卻時間
+function checkCooldown(type, storageKey) {
+  const expiry = parseInt(localStorage.getItem(storageKey) || '0', 10)
+  const now = Date.now()
+  const remaining = Math.ceil((expiry - now) / 1000)
+
+  if (remaining > 0) {
+    if (type === 'email') emailCooldown.value = remaining
+    if (type === 'phone') phoneCooldown.value = remaining
+  } else {
+    if (type === 'email') {
+      emailCooldown.value = 0
+      clearInterval(emailTimerInterval)
+    }
+    if (type === 'phone') {
+      phoneCooldown.value = 0
+      clearInterval(phoneTimerInterval)
+    }
+    localStorage.removeItem(storageKey)
+  }
 }
 
 // 📧 發送註冊驗證信
 async function sendEmailVerify() {
-  if (isSending.value) return
+  if (isSending.value || emailCooldown.value > 0) return
   isSending.value = true
   try {
     const res = await axios.post(`${API_URL}/send-email-verification`, {}, { withCredentials: true })
     showMessage(res.data.message)
-    startCooldown('email')
+    startCooldown('email', 60)
   } catch (error) {
-    showMessage(error.response?.data?.message || '發送失敗，請確認資料')
+    const errorMsg = error.response?.data?.message || '發送失敗，請確認資料'
+    showMessage(errorMsg)
+    
+    // 💡 同步後端秒數：如果使用者清空暫存強行點擊，抓取後端回傳的剩餘秒數校正前端
+    const match = errorMsg.match(/請於 (\d+) 秒後再試/)
+    if (match && match[1]) {
+      startCooldown('email', parseInt(match[1], 10))
+    }
   } finally {
     isSending.value = false
   }
@@ -162,15 +207,22 @@ async function sendPhoneVerify() {
     return
   }
   
-  if (isSending.value) return
+  if (isSending.value || phoneCooldown.value > 0) return
   isSending.value = true
   try {
     const res = await axios.post(`${API_URL}/send-phone-verification`, {}, { withCredentials: true })
     showMessage(res.data.message)
-    startCooldown('phone')
-    showPhoneInput.value = true // 展開輸入框
+    startCooldown('phone', 60)
+    showPhoneInput.value = true
   } catch (error) {
-    showMessage(error.response?.data?.message || '發送失敗，請確認手機號碼是否正確')
+    const errorMsg = error.response?.data?.message || '發送失敗，請確認手機號碼是否正確'
+    showMessage(errorMsg)
+
+    // 💡 同步後端秒數
+    const match = errorMsg.match(/請於 (\d+) 秒後再試/)
+    if (match && match[1]) {
+      startCooldown('phone', parseInt(match[1], 10))
+    }
   } finally {
     isSending.value = false
   }
@@ -182,8 +234,8 @@ async function verifyPhoneCode() {
   isSending.value = true
   try {
     const res = await axios.post(`${API_URL}/verify-phone-code`, { code: phoneCode.value }, { withCredentials: true })
-    showMessage(res.data) // 後端回傳的是純字串 "手機驗證成功！"
-    profile.value.isPhoneVerified = true // 畫面即時更新為已驗證
+    showMessage(res.data) 
+    profile.value.isPhoneVerified = true 
     authStore.profile.isPhoneVerified = true
     showPhoneInput.value = false
   } catch (error) {
@@ -193,64 +245,52 @@ async function verifyPhoneCode() {
   }
 }
 
-const authStore = useAuthStore()
-const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
-
-const profile = ref({
-  email: '', name: '', cellphoneNumber: '', birthday: '',
-  cash: 0, memberPoint: 0, createdDate: '',
-  isEmailVerified: false, isPhoneVerified: false
-})
-
-// 💡 新增：用來綁定 Modal 提示文字的變數
-const modalMessage = ref('')
-let infoModalInstance = null
-
 onMounted(() => {
-  // 💡 防禦機制：強制解除可能殘留的登入黑幕與捲軸鎖定
   document.body.classList.remove('modal-open')
   document.body.style.overflow = ''
   document.body.style.paddingRight = ''
   document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
 
-  // 💡 初始化 Modal 實例
   const modalEl = document.getElementById('infoModal')
   if (modalEl) {
     infoModalInstance = new bootstrap.Modal(modalEl)
   }
 
-  // 從 Pinia 拿現成的快取資料
   if (authStore.isLoggedIn) {
     profile.value = { ...authStore.profile }
   }
+
+  // 💡 頁面載入時，檢查 localStorage 是否有未跑完的冷卻時間並自動恢復倒數
+  const emailExpiry = parseInt(localStorage.getItem('emailCooldownExpiry') || '0', 10)
+  if (emailExpiry > Date.now()) {
+    startCooldown('email', Math.ceil((emailExpiry - Date.now()) / 1000))
+  }
+
+  const phoneExpiry = parseInt(localStorage.getItem('phoneCooldownExpiry') || '0', 10)
+  if (phoneExpiry > Date.now()) {
+    startCooldown('phone', Math.ceil((phoneExpiry - Date.now()) / 1000))
+  }
 })
 
-// 💡 2. 新增：自動轉換時區的計算屬性
+// 💡 離開頁面時清除計時器，避免記憶體洩漏
+onUnmounted(() => {
+  if (emailTimerInterval) clearInterval(emailTimerInterval)
+  if (phoneTimerInterval) clearInterval(phoneTimerInterval)
+})
+
 const formattedCreatedDate = computed(() => {
   if (!profile.value.createdDate) return ''
-  
-  // 防呆機制：如果 .NET 傳來的字串沒有包含時區資訊 (Z)，我們強制標記它為 UTC
   let dateStr = profile.value.createdDate
   if (!dateStr.endsWith('Z') && !dateStr.includes('+')) {
     dateStr += 'Z'
   }
-
   const d = new Date(dateStr)
-  
-  // 使用 toLocaleString 自動轉換為使用者裝置所在的當地時間
-  // undefined 代表自動偵測使用者的瀏覽器語系 (例如台灣人看到 YYYY/MM/DD，美國人看到 MM/DD/YYYY)
   return d.toLocaleString(undefined, {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false // 採用 24 小時制
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
   })
 })
 
-// 💡 新增：用來觸發 Modal 的專用函式
 function showMessage(msg) {
   modalMessage.value = msg
   if (infoModalInstance) {
@@ -260,7 +300,7 @@ function showMessage(msg) {
 
 async function updateProfile() {
   if (!authStore.isLoggedIn) {
-    showMessage('請先登入後再進行修改') // 替換 alert
+    showMessage('請先登入後再進行修改') 
     return
   }
 
@@ -271,15 +311,14 @@ async function updateProfile() {
       birthday: profile.value.birthday
     }, { withCredentials: true })
     
-    showMessage('會員資料更新成功！') // 替換 alert
+    showMessage('會員資料更新成功！') 
 
-    // 同步更新 Pinia 全域狀態
     authStore.profile.name = profile.value.name
     authStore.profile.cellphoneNumber = profile.value.cellphoneNumber
     authStore.profile.birthday = profile.value.birthday
 
   } catch (error) {
-    showMessage(error.response?.data?.message || error.response?.data || '更新失敗，請稍後再試') // 替換 alert
+    showMessage(error.response?.data?.message || error.response?.data || '更新失敗，請稍後再試') 
   }
 }
 </script>
