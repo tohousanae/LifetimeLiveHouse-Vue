@@ -8,6 +8,7 @@ import Login from '@/components/Mikushop/User/Login-page.vue'
 import UserManage from '@/components/Mikushop/User/User-Manage.vue'
 import * as bootstrap from 'bootstrap' // 💡 確保有引入 bootstrap
 import { useAuthStore } from '@/stores/auth' // 👈 補上這行把 Pinia store 引入進來
+import VerifyEmail from '@/components/Mikushop/User/Verify-Email.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +57,11 @@ const router = createRouter({
       component: UserManage,
       // 💡 關鍵設定：標記這個路由需要登入才能訪問
       meta: { requiresAuth: true } 
+    },
+    {
+      path: '/verify-email',
+      name: 'verifyemail',
+      component: VerifyEmail
     }
   ]
 })
