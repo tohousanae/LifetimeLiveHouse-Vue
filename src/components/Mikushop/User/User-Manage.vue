@@ -43,7 +43,7 @@
         <div class="alert h-100 mb-0 d-flex flex-column justify-content-center"
           :class="profile.isPhoneVerified ? 'alert-success' : 'alert-warning'">
           <div class="d-flex justify-content-between align-items-center w-100">
-            <div>手機驗證(目前尚只支持台灣手機號碼註冊)：<strong>{{ profile.isPhoneVerified ? '已驗證 ✔️' : '尚未驗證 ❌' }}</strong></div>
+            <div>手機驗證(目前只支持台灣手機號碼註冊)：<strong>{{ profile.isPhoneVerified ? '已驗證 ✔️' : '尚未驗證 ❌' }}</strong></div>
             <button v-if="!profile.isPhoneVerified" @click="sendPhoneVerify" :disabled="phoneCooldown > 0 || isSending"
               class="btn btn-sm btn-outline-dark bg-white">
               {{ phoneCooldown > 0 ? `請稍後 (${phoneCooldown}s)` : '發送驗證碼' }}
