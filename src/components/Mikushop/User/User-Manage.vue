@@ -243,12 +243,34 @@ async function verifyPhoneCode() {
   isSending.value = true
   try {
     const res = await axios.post(`${API_URL}/verify-phone-code`, { code: phoneCode.value }, { withCredentials: true })
-    showMessage(res.data)
+    
+    // 成功時，UserController 回傳的格式是 { message: "手機驗證成功！" }
+    showMessage(res.data.message || '手機驗證成功！')
+    
     profile.value.isPhoneVerified = true
     authStore.profile.isPhoneVerified = true
     showPhoneInput.value = false
+    phoneCode.value = '' // 成功後順手清空
+
   } catch (error) {
-    showMessage(error.response?.data?.message || error.response?.data || '驗證碼錯誤或已過期')
+    // 💡 統一優先抓取 error.response.data.message
+    let errorMsg = '驗證碼錯誤或已過期'
+    
+    if (error.response?.data?.message) {
+      errorMsg = error.response.data.message
+    } else if (typeof error.response?.data === 'string') {
+      // 預防萬一後端還是傳了純字串回來
+      errorMsg = error.response.data
+    } else if (error.response?.data?.errors) {
+      // 處理 .NET 的 ModelState 格式驗證錯誤 (例如 DTO 欄位驗證失敗)
+      const firstErrorKey = Object.keys(error.response.data.errors)[0]
+      errorMsg = error.response.data.errors[firstErrorKey][0]
+    }
+    
+    showMessage(errorMsg)
+    
+    // 💡 驗證失敗時，清空輸入框讓使用者重打
+    phoneCode.value = ''
   } finally {
     isSending.value = false
   }
