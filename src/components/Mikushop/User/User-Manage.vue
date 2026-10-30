@@ -358,7 +358,19 @@ async function updateProfile() {
     authStore.profile.birthday = profile.value.birthday
 
   } catch (error) {
-    showMessage(error.response?.data?.message || error.response?.data || '更新失敗，請稍後再試') 
+    let errorMsg = '更新失敗，請稍後再試'
+    
+    if (error.response?.data?.message) {
+      errorMsg = error.response.data.message
+    } else if (typeof error.response?.data === 'string') {
+      errorMsg = error.response.data
+    } else if (error.response?.data?.errors) {
+      // 處理 .NET 的 ModelState 欄位驗證錯誤
+      const firstErrorKey = Object.keys(error.response.data.errors)[0]
+      errorMsg = error.response.data.errors[firstErrorKey][0]
+    }
+    
+    showMessage(errorMsg) 
   }
 }
 </script>
