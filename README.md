@@ -25,7 +25,7 @@
 5. Cloudflare：網域託管(抗ddos) + 電子郵件路由 + Pages上線部署(未完成)
 6. Twilio簡訊驗證
 
-## 後端的github頁面
+## 後端API的github介紹
 https://github.com/tohousanae/am3buger-WebApi
 
 ## Recommended IDE Setup
