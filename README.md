@@ -14,9 +14,9 @@
 
 ## 畫面
 
-> 可提供 1~3 張圖片，讓觀看者透過 README 了解整體畫面
+> 會員登入
 
-![範例圖片 1](https://fakeimg.pl/500/)
+![範例圖片 1](<img width="559" height="456" alt="螢幕擷取畫面 2026-11-01 020238" src="https://github.com/user-attachments/assets/5bb72c4a-a904-4d69-a419-f6e1af29eb58" />)
 ![範例圖片 2](https://fakeimg.pl/500/)
 ![範例圖片 3](https://fakeimg.pl/500/)
 
