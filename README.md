@@ -14,7 +14,7 @@
 
 ## 畫面
 
-> 會員登入
+> 登入畫面
 
 <img width="376" height="422" alt="image" src="https://github.com/user-attachments/assets/246c8e91-56ac-4ad2-95f0-f434a954ee77" />
 
