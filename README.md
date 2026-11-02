@@ -22,9 +22,6 @@
 <img width="368" height="648" alt="image" src="https://github.com/user-attachments/assets/eb0cd03b-09d1-46eb-8f0b-7a2225244330" />  
 <img width="371" height="582" alt="image" src="https://github.com/user-attachments/assets/21e63971-399d-4f57-8ae1-51dc135cd48d" />
 
-![範例圖片 2](https://fakeimg.pl/500/)
-![範例圖片 3](https://fakeimg.pl/500/)
-
 ## 技術
 ### 前端
 1. SPA框架：Vite + Vue3 + Vue routing
