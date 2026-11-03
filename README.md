@@ -17,11 +17,11 @@
 > 登入畫面
 <img width="376" height="422" alt="image" src="https://github.com/user-attachments/assets/246c8e91-56ac-4ad2-95f0-f434a954ee77" />
 
-> 會員中心
+> 會員中心(可發送信箱、手機驗證信)
 <img width="368" height="648" alt="image" src="https://github.com/user-attachments/assets/eb0cd03b-09d1-46eb-8f0b-7a2225244330" />
 <img width="371" height="582" alt="image" src="https://github.com/user-attachments/assets/21e63971-399d-4f57-8ae1-51dc135cd48d" />
 
-> 註冊驗證信
+> 註冊後與在會員中心發送的會員驗證信
 <img width="628" height="343" alt="image" src="https://github.com/user-attachments/assets/16cdcef2-bf2b-44b8-9991-2450401eda25" />
 
 ## 技術
