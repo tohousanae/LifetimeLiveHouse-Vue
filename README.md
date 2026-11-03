@@ -22,8 +22,7 @@
 <img width="371" height="582" alt="image" src="https://github.com/user-attachments/assets/21e63971-399d-4f57-8ae1-51dc135cd48d" />
 
 > 註冊驗證信
-<img width="654" height="381" alt="image" src="https://github.com/user-attachments/assets/baff3706-8bfd-4fbd-913c-1f1dda6032a9" />
-
+<img width="628" height="343" alt="image" src="https://github.com/user-attachments/assets/16cdcef2-bf2b-44b8-9991-2450401eda25" />
 
 ## 技術
 ### 前端
