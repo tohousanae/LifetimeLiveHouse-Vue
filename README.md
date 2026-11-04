@@ -31,15 +31,6 @@
 2. Vue routing
 3. AJAX
 
-### 後端
-1. .net core 10 Web api
-2. redis快取
-3. Python爬蟲取得二次元跨媒體作品最新情報(未完成)
-4. 使用者密碼使用ByCrypt、SHA256加密儲存
-5. Cloudflare：網域託管(抗ddos) + 電子郵件路由 + Pages上線部署(未完成)
-6. Twilio簡訊驗證
-7. 串接綠界或藍新金流服務(未完成)
-
 ## 後端API的github介紹
 https://github.com/tohousanae/am3buger-WebApi
 
