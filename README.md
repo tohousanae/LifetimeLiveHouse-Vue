@@ -26,7 +26,6 @@
 <img width="628" height="343" alt="image" src="https://github.com/user-attachments/assets/16cdcef2-bf2b-44b8-9991-2450401eda25" />
 
 ## 技術
-### 前端
 1. Vue3
 2. Vue routing
 3. AJAX
