@@ -1,103 +1,94 @@
 <template>
-  <!--註冊表單模板：https://codepen.io/1bbnuuu/pen/dyagBQz-->
-  <div class="form-center">
-    <form
-      @submit.prevent="sendForgetPasswordForm"
-      class="row col-12 col-md-4 d-flex needs-validation"
-      novalidate
-    >
-      <div class="col-12 text-start text-md-center mb-3">
+  <div class="form-center container">
+    <!-- 💡 將表單寬度改為與註冊畫面一致的 col-md-6 -->
+    <form @submit.prevent="sendForgetPasswordForm" class="row col-12 col-md-6 d-flex needs-validation my-auto py-5" novalidate>
+      
+      <!-- 💡 對齊註冊畫面的標題間距 (mb-3) -->
+      <div class="col-12 text-center mb-3">
         <h2>忘記密碼</h2>
+        <p class="text-muted mt-2">請輸入您的註冊信箱，我們將發送密碼重設連結給您。</p>
       </div>
-      <div class="col-12 mb-3">
+      
+      <!-- 信箱 -->
+      <div class="col-12 mb-3 text-start">
         <label for="validationEmail" class="form-label">信箱</label>
-        <input
-          v-model="email"
-          type="email"
-          class="form-control"
-          id="validationEmail"
-          placeholder="name@example.com"
-          required
+        <input 
+          v-model.trim="email" 
+          type="email" 
+          autocomplete="email"
+          class="form-control" 
+          :class="{ 'is-valid': hasSubmitted && isEmailValid, 'is-invalid': hasSubmitted && !isEmailValid }" 
+          placeholder="name@example.com" 
+          required 
         />
-        <div class="valid-feedback">Looks good!</div>
-        <div class="invalid-feedback">此為必填欄位</div>
+        <div class="invalid-feedback">信箱不能為空，且格式必須正確，最多 30 字元</div>
       </div>
-      <div class="col-12 mb-3">
-        <button class="btn btn-primary" type="submit">送出</button>
+      
+      <!-- 提示訊息區塊 -->
+      <div v-if="message" class="col-12 mb-3 text-start">
+        <div class="alert py-2 small mb-0" :class="isSuccess ? 'alert-success' : 'alert-danger'" role="alert">
+          <i class="bi me-1" :class="isSuccess ? 'bi-check-circle-fill' : 'bi-exclamation-circle'"></i>
+          {{ message }}
+        </div>
+      </div>
+
+      <!-- 按鈕區塊 -->
+      <div class="col-12 mb-3 d-flex gap-2">
+        <RouterLink to="/" class="btn btn-outline-secondary w-50">回首頁</RouterLink>
+        <button class="btn btn-primary w-50" type="submit" :disabled="isLoading">
+          {{ isLoading ? '發送中...' : '送出' }}
+        </button>
       </div>
     </form>
   </div>
 </template>
 
 <style scoped>
-/* 表單置於畫面正中央 */
-.form-center {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* 💡 完全比照註冊畫面的 CSS 結構 */
+.form-center { 
+  min-height: 100vh; 
+  display: flex; 
+  justify-content: center; 
+  padding: 15px; 
+}
+.hide-validation-icon.is-valid, .hide-validation-icon.is-invalid { 
+  background-image: none !important; 
 }
 </style>
 
 <script setup>
 import axios from 'axios'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-const API_URL = `${import.meta.env.VITE_API_SPOTURL}/User`
+const API_URL = `${import.meta.env.VITE_API_SPOTURL}/ForgetPassword`
 
-// 定義表單資料變數
-let email = ref('').value
+const email = ref('')
+const isLoading = ref(false)
+const message = ref('')
 
-// 送出註冊表單
+const hasSubmitted = ref(false) 
+const isSuccess = ref(false) 
+
+const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const isEmailValid = computed(() => email.value !== '' && regexEmail.test(email.value) && email.value.length <= 30)
+
 async function sendForgetPasswordForm() {
-  // 前端部分密碼不進行哈希加密，而是以https來保護資料，後端再進行哈希加密，這可以防止攻擊者攔截網路請求看到哈希值後進行重放攻擊
-  // 參考資料(https://academy.binance.com/zt/articles/what-is-a-replay-attack)
-  // Send a POST request
-  await axios({
-    method: 'post',
-    url: `${API_URL}/forgetpasswordEmailSendTokenGen`,
-    withCredentials: true, //ajax請求有用到cookie時都要設定withCredentials: true
-    data: { email: email }
-  })
-    .then(async function (response) {
-      const token = response.data.replace(/\//g, '') // 去除斜線
-      console.log(response)
-      await axios({
-        method: 'post',
-        url: `${import.meta.env.VITE_API_SPOTURL}/Mail/send`,
-        data: {
-          toEmail: email,
-          subject: `凌晨3點漢堡店-重設密碼通知信`,
-          body: ` <!DOCTYPE html>
-                  <html lang="en">
-                  <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>重設密碼</title>
-                  </head>
-                  <body>
-                    <p>${email}您好</p>
-                    <p>密碼重置連結為：</p>
-                    <p><a href="${window.location.origin}/${token}">${window.location.origin}/${token}</a></p>
-                    <p>連結有效期限為30分鐘，請在30分鐘內完成完成重設密碼操作，否則連結失效。</p>
-                    <hr>
-                    <p>本信件為系統自動發出，請勿回覆</p>
-                  </body>
-                  </html>`
-        }
-      })
-        .then(function (response) {
-          console.log(response)
-          alert(`已送出忘記密碼連結到${email}，請查看您的信箱`)
-        })
-        .catch(function (error) {
-          console.log(error)
-          alert(error.response.data)
-        })
-    })
-    .catch(function (error) {
-      console.log(error)
-      alert(error.response.data)
-    })
+  hasSubmitted.value = true 
+  message.value = ''
+  
+  if (!isEmailValid.value) return
+
+  isLoading.value = true
+
+  try {
+    const response = await axios.post(`${API_URL}/forgot-password`, { email: email.value })
+    isSuccess.value = true 
+    message.value = response.data.message
+  } catch (error) {
+    isSuccess.value = false 
+    message.value = error.response?.data?.message || '發送失敗，請確認信箱是否正確'
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
