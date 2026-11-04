@@ -26,8 +26,9 @@
 
 ## 技術
 ### 前端
-1. SPA框架：Vite + Vue3 + Vue routing
-2. AJAX
+1. Vue3
+2. Vue routing
+3. AJAX
 
 ### 後端
 1. .net core 10 Web api
